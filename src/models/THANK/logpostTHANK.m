@@ -1,4 +1,4 @@
-function logpost=logpostJPT(param,T,y);
+function logpost=logpostTHANK(param,T,y);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Date: December 22, 2009

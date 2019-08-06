@@ -1,4 +1,4 @@
-function logpriorJPT = logpriorJPT_MCMC (param);
+function logpriorTHANK = logpriorTHANK_MCMC (param);
 
 loprior = zeros(length(param));
 
@@ -44,7 +44,7 @@ prior(35) = logIG1pdf(param(35),0.1,1);             % sdb
 
 
 if all(isfinite(prior))==0 | all(isreal(prior))==0;
-    logpriorJPT=-1e10;
+    logpriorTHANK=-1e10;
 else
-    logpriorJPT=sum(prior);
+    logpriorTHANK=sum(prior);
 end

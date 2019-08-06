@@ -1,4 +1,4 @@
-function logpost=logpostJPT_MCMC(param,T,y);
+function logpost=logpostTHANK_MCMC(param,T,y);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Date: December 22, 2009
