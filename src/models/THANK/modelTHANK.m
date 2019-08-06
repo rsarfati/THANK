@@ -176,7 +176,6 @@ numpar = 35;  % Number of parameters
 ncof   = 28;  % Number of coefficients not corresponding to
               % standard deviations
 
-
 % -------------------------------------------------------------------------
 % Computation of the steady state
 % -------------------------------------------------------------------------
@@ -189,11 +188,13 @@ gss    = 1 / (1-gss);
 
 expLss = exp(Lss);
 Rkss   = (exp(gamma)/beta-1+delta);
-sss    = 1/(1+lambdapss);
+sss    = 1 / (1 + lambdapss);
 wss    = (sss*((1-alpha)^(1-alpha))/((alpha^(-alpha))*Rkss^alpha))^(1/(1-alpha));
 kLss   = (wss/Rkss)*alpha/(1-alpha);
 FLss   = (kLss^alpha-Rkss*kLss-wss);
 yLss   = kLss^alpha-FLss;
+
+% Multiply by L_ss again
 kss    = kLss*expLss;
 i_s_ss = (1-(1-delta)*exp(-gamma))*kss*exp(gamma);
 F      = FLss*expLss;
