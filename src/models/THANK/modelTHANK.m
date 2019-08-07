@@ -1,5 +1,4 @@
 function [G1,C,impact,eu,SDX,zmat,NY,NX] = modelTHANK(param)
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % For given parameter values, this function
 % 1) puts the model of Justiniano, Primiceri and Tambalotti (2009)
@@ -97,7 +96,6 @@ c_h_star   = var_len + 23;
 c_s_star   = var_len + 24;
 t_H_star   = var_len + 25;
 
-
 NY = var_len + 25;
 
 % -------------------------------------------------------------------------
@@ -137,10 +135,10 @@ NETA = 7+5;
 % -------------------------------------------------------------------------
 % Index for the parameters
 % -------------------------------------------------------------------------
-
 % calibrated parameters
-gss   = 0.22;         % capital depreciation rate
-delta = 0.025;        % steady state government spending to GDP ratio
+gss       = 0.22;  % capital depreciation rate
+delta     = 0.025; % steady state government spending to GDP ratio
+t_h_0_Lss = 0.0;   % New parameter! Might estimate.
 
 % Non SD parameters
 % -------------------------------------------------------------------------
@@ -171,42 +169,41 @@ rhoARMAlambdap = param(27); rhoARMAlambdaw = param(28);
 sdR = param(29); sdz = param(30); sdg = param(31); sdmiu = param(32); 
 sdlambdap = param(33); sdlambdaw = param(34); sdb = param(35);
 SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
-
 % New parameters
 theta = param(36);
 sigma = param(37);
+tau   = param(38);
 
-numpar = 35 + 2;  % Number of parameters
-ncof   = 28 + 2;  % Number of coefficients not corresponding to
-              % standard deviations
+numpar = 35 + 3;  % Number of parameters
+ncof   = 28 + 3;  % Number of coefficients not corresponding to standard deviations
 
 % -------------------------------------------------------------------------
 % Computation of the steady state
 % -------------------------------------------------------------------------
 gamma  = gamma100 / 100;
+expg   = exp(gamma);
 beta   = 100 / (Fbeta + 100);
-rss    = exp(gamma) / beta - 1; % rss100, pss100 pop into constants
-rss100 = rss * 100;
-%pss    = pss100 / 100;
+rss    = expg / beta - 1; % rss100, pss100 pop into constants
+rss100 = rss * 100; % REMOVED: pss    = pss100 / 100;
 gss    = 1 / (1-gss);
 
 expLss = exp(Lss);
-Rkss   = (exp(gamma)/beta-1+delta); % RHO
+Rkss   = (expg/beta-1+delta); % RHO
 mcss   = 1 / (1 + lambdapss);
 wss    = (mcss*((1-alpha)^(1-alpha))/((alpha^(-alpha))*Rkss^alpha))^(1/(1-alpha));
-
+% Compute ratios wrt L_ss
 kLss   = (wss/Rkss) * alpha/(1-alpha);
 FLss   = (kLss^alpha - Rkss*kLss - wss);
 yLss   = kLss^alpha - FLss;
 
-i_s_Lss = (1 - (1-delta) * exp(-gamma)) * exp(gamma) * kLss / (1-theta); %%%
+i_s_Lss = (1 - (1-delta) * exp(-gamma)) * expg * kLss / (1-theta); %%%
 cLss    = yLss/gss - (1-theta) * i_s_Lss; %%%
 
-c_h_Lss = wss + t_h0_Lss + tau^K * Rkss * kLss; %%%
-c_s_Lss = (1/(1-theta)) * cLss - (theta/(1-theta)) * c_h_Lss; %%%
+c_h_Lss = wss + t_h_0_Lss + tau^K * Rkss * kLss; %%% TODO: Do we know K in this fn?
+c_s_Lss = (1/(1-theta))*cLss - (theta/(1-theta))*c_h_Lss; %%%
 
-lam_h_Lss = exp(gamma) / (exp(gamma) * c_h_Lss - h * cLss);
-lam_s_Lss = exp(gamma) / (exp(gamma) * c_s_Lss - h * cLss);
+lam_h_Lss = expg / (expg*c_h_Lss - h*cLss);
+lam_s_Lss = expg / (expg*c_s_Lss - h*cLss);
 
 % Multiply by L_ss again
 kss    = kLss * expLss;
@@ -222,15 +219,16 @@ i_s_ss = i_s_Lss * expLss;
 lam_h_ss = lam_h_Lss / expLss;
 lam_s_ss = lam_s_Lss / expLss;
 
-% -------------------------------------------------------------------------
-% System Matrices
-% -------------------------------------------------------------------------
-GAM0 = zeros(NY,NY) ;
-GAM1 = zeros(NY,NY) ;
-PSI  = zeros(NY,NX) ;
-PPI  = zeros(NY,NETA) ;
-C    = zeros(NY,1) ;
+R_ss = (pi*expg/beta) * lam_s_ss/(sigma*lam_s_ss + (1-sigma)*lam_h_ss);
 
+% -------------------------------------------------------------------------
+% System Matrices [stars = flexible price equilibrium]
+% -------------------------------------------------------------------------
+GAM0 = zeros(NY,NY);
+GAM1 = zeros(NY,NY);
+PSI  = zeros(NY,NX);
+PPI  = zeros(NY,NETA);
+C    = zeros(NY,1);
 
 % eq 1 and 2, production function (y, ystar)
 % -------------------------------------------------------------------------
@@ -267,7 +265,7 @@ GAM0(mc,Rk) = -alpha;
 GAM0(mc,w)  = -(1-alpha);
 
 %===
-GAM0(mcstar,mcstar)  = 1;
+GAM0(mcstar,mcstar) = 1;
 GAM0(mcstar,Rkstar) = -alpha;
 GAM0(mcstar,wstar)  = -(1-alpha);
 %===
@@ -275,11 +273,12 @@ GAM0(mcstar,wstar)  = -(1-alpha);
 
 % eq 7 and 8, Phillips curve (p and Rstar)
 % -------------------------------------------------------------------------
-GAM0(p,p) = 1;
-GAM0(p,ep) = -beta/(1+iotap*beta);
-GAM1(p,p) = iotap/(1+iotap*beta);
-GAM0(p,mc) = -((1-beta*xip)*(1-xip)/((1+iotap*beta)*xip));
-GAM0(p,lambdap) = -1;
+GAM0(p,p)  = 1;
+GAM0(p,ep) = -beta / (1 + iotap*beta);
+GAM1(p,p)  = iotap/(1 + iotap*beta);
+GAM0(p,mc) = -((1 - beta*xip)*(1 - xip)/((1 + iotap*beta)*xip)); % kappa_p
+GAM0(p,lambdap) = -1; %%% TODO: NORMALIZATION
+%GAM0(p,lambdap) = -((1 - beta*xip)*(1 - xip)/((1 + iotap*beta)*xip));
 
 %===
 GAM0(Rstar,mcstar) = 1;
@@ -288,16 +287,14 @@ GAM0(Rstar,mcstar) = 1;
 
 % eq 9 and 10, consumption foc (c and cstar)
 % -------------------------------------------------------------------------
-expg = exp(gamma);
-GAM0(c,lambda) = (expg-h*beta)*(expg-h);
-GAM0(c,b) = -(expg-h*beta*rhob)*(expg-h)/[(1-rhob)*(expg-h*beta*rhob)*(expg-h)/(expg*h+expg^2+beta*h^2)];
-GAM0(c,z) = -(beta*h*expg*rhoz-h*expg);
-GAM0(c,c) = (expg^2+beta*h^2);
-GAM0(c,ec) = -beta*h*expg;
-GAM1(c,c) = expg*h;
+GAM0(c,lambda) = (expg - h*beta)*(expg - h);
+GAM0(c,b)  = -(expg - h*beta*rhob)*(expg - h) / [(1-rhob)*(expg-h*beta*rhob)*(expg-h) / (expg*h+expg^2+beta*h^2)];
+GAM0(c,z)  = -(beta*h*expg*rhoz - h*expg);
+GAM0(c,c)  = (expg^2 + beta*h^2);
+GAM0(c,ec) = -beta * h * expg;
+GAM1(c,c)  =         h * expg;
 
 %===
-expg = exp(gamma);
 GAM0(cstar,lambdastar) = (expg-h*beta)*(expg-h);
 GAM0(cstar,b) = -(expg-h*beta*rhob)*(expg-h)/[(1-rhob)*(expg-h*beta*rhob)*(expg-h)/(expg*h+expg^2+beta*h^2)];
 GAM0(cstar,z) = -(beta*h*expg*rhoz-h*expg);
