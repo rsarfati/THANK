@@ -23,7 +23,7 @@ L           = 3;  % hours
 Rk          = 4;  % return on capital (rho)
 w           = 5;  % real wages
 p           = 6;  % inflation
-s           = 7;  % marginal cost
+mc          = 7;  % marginal cost
 lambda      = 8;  % multiplier
 c           = 9;  % consumption
 R           = 10; % interst rate
@@ -62,8 +62,9 @@ lam_s = 38;
 c_h   = 39;
 c_s   = 40;
 t_H   = 41;
+k_s   = 42;
 
-var_len = 41;
+var_len = 42;
 
 % variables for the flex prices and wages version of the model
 % -------------------------------------------------------------------------
@@ -72,7 +73,7 @@ kstar       = var_len + 2;
 Lstar       = var_len + 3;
 Rkstar      = var_len + 4;
 wstar       = var_len + 5;
-sstar       = var_len + 6;
+mcstar      = var_len + 6;
 lambdastar  = var_len + 7;
 cstar       = var_len + 8;
 Rstar       = var_len + 9;
@@ -141,7 +142,6 @@ NETA = 7+5;
 gss   = 0.22;         % capital depreciation rate
 delta = 0.025;        % steady state government spending to GDP ratio
 
-
 % Non SD parameters
 % -------------------------------------------------------------------------
 alpha     = param(1);  % share of capital in the prod. function
@@ -172,8 +172,12 @@ sdR = param(29); sdz = param(30); sdg = param(31); sdmiu = param(32);
 sdlambdap = param(33); sdlambdaw = param(34); sdb = param(35);
 SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
 
-numpar = 35;  % Number of parameters
-ncof   = 28;  % Number of coefficients not corresponding to
+% New parameters
+theta = param(36);
+sigma = param(37);
+
+numpar = 35 + 2;  % Number of parameters
+ncof   = 28 + 2;  % Number of coefficients not corresponding to
               % standard deviations
 
 % -------------------------------------------------------------------------
@@ -181,26 +185,42 @@ ncof   = 28;  % Number of coefficients not corresponding to
 % -------------------------------------------------------------------------
 gamma  = gamma100 / 100;
 beta   = 100 / (Fbeta + 100);
-rss    = exp(gamma) / beta - 1;
+rss    = exp(gamma) / beta - 1; % rss100, pss100 pop into constants
 rss100 = rss * 100;
-pss    = pss100 / 100;
+%pss    = pss100 / 100;
 gss    = 1 / (1-gss);
 
 expLss = exp(Lss);
-Rkss   = (exp(gamma)/beta-1+delta);
-sss    = 1 / (1 + lambdapss);
-wss    = (sss*((1-alpha)^(1-alpha))/((alpha^(-alpha))*Rkss^alpha))^(1/(1-alpha));
-kLss   = (wss/Rkss)*alpha/(1-alpha);
-FLss   = (kLss^alpha-Rkss*kLss-wss);
-yLss   = kLss^alpha-FLss;
+Rkss   = (exp(gamma)/beta-1+delta); % RHO
+mcss   = 1 / (1 + lambdapss);
+wss    = (mcss*((1-alpha)^(1-alpha))/((alpha^(-alpha))*Rkss^alpha))^(1/(1-alpha));
+
+kLss   = (wss/Rkss) * alpha/(1-alpha);
+FLss   = (kLss^alpha - Rkss*kLss - wss);
+yLss   = kLss^alpha - FLss;
+
+i_s_Lss = (1 - (1-delta) * exp(-gamma)) * exp(gamma) * kLss / (1-theta); %%%
+cLss    = yLss/gss - (1-theta) * i_s_Lss; %%%
+
+c_h_Lss = wss + t_h0_Lss + tau^K * Rkss * kLss; %%%
+c_s_Lss = (1/(1-theta)) * cLss - (theta/(1-theta)) * c_h_Lss; %%%
+
+lam_h_Lss = exp(gamma) / (exp(gamma) * c_h_Lss - h * cLss);
+lam_s_Lss = exp(gamma) / (exp(gamma) * c_s_Lss - h * cLss);
 
 % Multiply by L_ss again
-kss    = kLss*expLss;
-i_s_ss = (1-(1-delta)*exp(-gamma))*kss*exp(gamma);
-F      = FLss*expLss;
-yss    = yLss*expLss;
-css    = yss/gss-i_s_ss;
+kss    = kLss * expLss;
+F      = FLss * expLss;
+yss    = yLss * expLss;
+css    = cLss * expLss;
 
+% New equations
+c_h_ss = c_h_Lss * expLss;
+c_s_ss = c_s_Lss * expLss;
+i_s_ss = i_s_Lss * expLss;
+
+lam_h_ss = lam_h_Lss / expLss;
+lam_s_ss = lam_s_Lss / expLss;
 
 % -------------------------------------------------------------------------
 % System Matrices
@@ -240,16 +260,16 @@ GAM0(Lstar,Lstar)  = -1;
 % ===
 
 
-% eq 5 and 6, marginal cost (s and sstar)
+% eq 5 and 6, marginal cost (s and mcstar )
 % -------------------------------------------------------------------------
-GAM0(s,s)  = 1;
-GAM0(s,Rk) = -alpha;
-GAM0(s,w)  = -(1-alpha);
+GAM0(mc,mc) = 1;
+GAM0(mc,Rk) = -alpha;
+GAM0(mc,w)  = -(1-alpha);
 
 %===
-GAM0(sstar,sstar)  = 1;
-GAM0(sstar,Rkstar) = -alpha;
-GAM0(sstar,wstar)  = -(1-alpha);
+GAM0(mcstar,mcstar)  = 1;
+GAM0(mcstar,Rkstar) = -alpha;
+GAM0(mcstar,wstar)  = -(1-alpha);
 %===
 
 
@@ -258,11 +278,11 @@ GAM0(sstar,wstar)  = -(1-alpha);
 GAM0(p,p) = 1;
 GAM0(p,ep) = -beta/(1+iotap*beta);
 GAM1(p,p) = iotap/(1+iotap*beta);
-GAM0(p,s) = -((1-beta*xip)*(1-xip)/((1+iotap*beta)*xip));
+GAM0(p,mc) = -((1-beta*xip)*(1-xip)/((1+iotap*beta)*xip));
 GAM0(p,lambdap) = -1;
 
 %===
-GAM0(Rstar,sstar) = 1;
+GAM0(Rstar,mcstar) = 1;
 %===
 
 
