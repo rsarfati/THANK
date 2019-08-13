@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Date: August 6, 2019
+% Date: August 13, 2019
 % This is the main code that controls the estimation of the baseline DSGE
 % model in ... by
 % Justiniano, Primiceri and Tambalotti
