@@ -1,4 +1,4 @@
-function logpriorTHANK = logpriorTHANK (param);
+function logpriorTHANK = logpriorTHANK(param)
 
 loprior = zeros(length(param));
 
@@ -40,10 +40,16 @@ prior(33) = logIG1pdf(param(33),0.1,1);             % sdlambdap
 prior(34) = logIG1pdf(param(34),0.1,1);             % sdlambdaw
 prior(35) = logIG1pdf(param(35),0.1,1);             % sdb
 
+prior(36) = logBetapdf(param(36),0.4,0.2);          % theta
+prior(37) = logBetapdf(param(37),0.9,0.06);         % sigma
+prior(38) = log(normpdf(param(38),0.0,2));          % sigma_prime
 
+% Corresponds to Case 1d
+prior(39) = logBetapdf(param(30),0.4,0.2);          % tau_D
+prior(40) = logBetapdf(param(30),0.4,0.2);          % tau_k
 
-if all(isfinite(prior))==0 | all(isreal(prior))==0;
-    logpriorTHANK=-1e10;
+if all(isfinite(prior))==0 || all(isreal(prior))==0
+    logpriorTHANK = -1e10;
 else
-    logpriorTHANK=sum(prior);
+    logpriorTHANK = sum(prior);
 end

@@ -39,28 +39,29 @@ N = 200;       % number of discarded draws at the beginning of each chain
 % First chain
 P1 = zeros(M,length(xh));
 logpostOLD = -1e+10;
-while logpostOLD == -1e+10;
+while logpostOLD == -1e+10
     P1(1,:) = mvnrnd(postmode, 4 * HH * const^2, 1);
     logpostOLD = logpostTHANK_MCMC(P1(1,:), T, y);
 end
 
 count = 0;
 for i=2:M
-    if i==100*floor(.01*i);
+    if i==100*floor(.01*i)
         i
-        ACCrate1=count/i
+        ACCrate1 = count/i
     end
     P1(i,:)=mvnrnd(P1(i-1,:),HH*const^2,1);
     logpostNEW=logpostTHANK_MCMC(P1(i,:),T,y);
-    if logpostNEW>logpostOLD
+    
+    if logpostNEW > logpostOLD
         logpostOLD=logpostNEW;
         count=count+1;
     else
-        if rand(1)<exp(logpostNEW-logpostOLD);
-            logpostOLD=logpostNEW;
-            count=count+1;
+        if rand(1) < exp(logpostNEW - logpostOLD)
+            logpostOLD = logpostNEW;
+            count = count+1;
         else
-            P1(i,:)=P1(i-1,:);
+            P1(i,:) = P1(i-1,:);
         end
     end
 end
@@ -69,45 +70,46 @@ ACCrate1=count/M;
 % Second chain
 P2=zeros(M,length(xh));
 logpostOLD=-1e+10;
-while logpostOLD==-1e+10;
-    P2(1,:)=mvnrnd(postmode,4*HH*const^2,1);
-    logpostOLD=logpostTHANK_MCMC(P2(1,:),T,y);
+while logpostOLD == -1e+10
+    P2(1,:) = mvnrnd(postmode, 4 * HH * const^2, 1);
+    logpostOLD = logpostTHANK_MCMC(P2(1,:), T, y);
 end
 
 % Metropolis algorithm
 count=0;
 for i=2:M
-    if i==100*floor(.01*i);
+    if i == 100*floor(.01*i)
         i
     end
-    P2(i,:)=mvnrnd(P2(i-1,:),HH*const^2,1);
-    logpostNEW=logpostTHANK_MCMC(P2(i,:),T,y);
-    if logpostNEW>logpostOLD
-        logpostOLD=logpostNEW;
-        count=count+1;
+    P2(i,:) = mvnrnd(P2(i-1,:), HH * const^2, 1);
+    logpostNEW = logpostTHANK_MCMC(P2(i,:), T, y);
+    
+    if logpostNEW > logpostOLD
+        logpostOLD = logpostNEW;
+        count = count+1;
     else
-        if rand(1)<exp(logpostNEW-logpostOLD);
-            logpostOLD=logpostNEW;
-            count=count+1;
+        if rand(1) < exp(logpostNEW - logpostOLD)
+            logpostOLD = logpostNEW;
+            count = count+1;
         else
-            P2(i,:)=P2(i-1,:);
+            P2(i,:) = P2(i-1,:);
         end
     end
 end
 ACCrate2=count/M;
 
 % Third chain
-P3=zeros(M,length(xh));
-logpostOLD=-1e+10;
-while logpostOLD==-1e+10;
-    P3(1,:)=mvnrnd(postmode,4*HH*const^2,1);
+P3 = zeros(M,length(xh));
+logpostOLD = -1e+10;
+while logpostOLD==-1e+10
+    P3(1,:) = mvnrnd(postmode,4*HH*const^2,1);
     logpostOLD=logpostTHANK_MCMC(P3(1,:),T,y);
 end
 
 % Metropolis algorithm
 count=0;
 for i=2:M
-    if i==100*floor(.01*i);
+    if i==100*floor(.01*i)
         i
     end
     P3(i,:)=mvnrnd(P3(i-1,:),HH*const^2,1);
@@ -116,7 +118,7 @@ for i=2:M
         logpostOLD=logpostNEW;
         count=count+1;
     else
-        if rand(1)<exp(logpostNEW-logpostOLD);
+        if rand(1) < exp(logpostNEW-logpostOLD) 
             logpostOLD=logpostNEW;
             count=count+1;
         else
@@ -126,7 +128,7 @@ for i=2:M
 end
 ACCrate3=count/M;
 
-P=[P1(N+1:end,:);P2(N+1:end,:);P3(N+1:end,:)];
+P = [P1(N+1:end,:); P2(N+1:end,:); P3(N+1:end,:)];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Processing output
