@@ -36,16 +36,22 @@ sdlambdap      = bound0INV( param(33));
 sdlambdaw      = bound0INV( param(34)); 
 sdb            = bound0INV( param(35));
 
+theta          = bound0BINV(param(36),.99);
+sigma          = bound0BINV(param(37),.99);
+sigma_prime    = bound01INV(param(38));     
+tau_D          = bound0BINV(param(39),.99);
+tau_k          = bound0BINV(param(40),.99);
+
 theta = [alpha iotap iotaw gamma100 h lambdapss lambdawss Lss pss100 Fbeta       ...
          niu xip xiw chi S fp fy fdy rhoR rhoz rhog rhomiu rholambdap rholambdaw ...
          rhob rhomp rhoARMAlambdap rhoARMAlambdaw sdR sdz sdg sdmiu sdlambdap    ...
-         sdlambdaw sdb];
+         sdlambdaw sdb theta sigma sigma_prime tau_D tau_k];
 
 function rho = bound01INV(param)
 rho = log(param/(1-param));
 
-function rho = bound0BINV(param,B)
-rho = log(param/B/(1-param/B));
+function rho = bound0BINV(param, B)
+rho = log(param/B / (1 - param/B));
 
 function sigma = bound0INV(param)
 sigma = log(param);
