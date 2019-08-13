@@ -1,4 +1,4 @@
-function J = jacobTHANK(param);
+function J = jacobTHANK(param)
 
 J = zeros(length(param),1);
 
@@ -37,6 +37,12 @@ J(32) = bound0prime( param(32));
 J(33) = bound0prime( param(33)); 
 J(34) = bound0prime( param(34)); 
 J(35) = bound0prime( param(35));
+
+J(36) = bound0Bprime(param(36), .99);
+J(37) = bound0Bprime(param(37), .99);
+J(38) = bound01prime(param(38));
+J(39) = bound0Bprime(param(39), .99);
+J(40) = bound0Bprime(param(40), .99);
 
 J = diag(J);
 

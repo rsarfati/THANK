@@ -31,6 +31,7 @@ prior(25) = logBetapdf(param(25),0.6,0.2);          % rhob
 prior(26) = logBetapdf(param(26),0.4,0.2);          % rhomp
 prior(27) = logBetapdf(param(27),0.5,0.2);          % rhoARMAlambdap
 prior(28) = logBetapdf(param(28),0.5,0.2);          % rhoARMAlambdaw
+
 if any(param(19:28)>0.99); prior(19:28)=log(0); end
 
 prior(29) = logIG1pdf(param(29),0.1,1);             % sdR
@@ -41,9 +42,15 @@ prior(33) = logIG1pdf(param(33),0.1,1);             % sdlambdap
 prior(34) = logIG1pdf(param(34),0.1,1);             % sdlambdaw
 prior(35) = logIG1pdf(param(35),0.1,1);             % sdb
 
+prior(36) = logBetapdf(param(36),0.4,0.2);          % theta
+prior(37) = logBetapdf(param(37),0.9,0.06);         % sigma
+prior(38) = log(normpdf(param(38),0.0,2));          % sigma_prime
 
+% Corresponds to Case 1d
+prior(39) = logBetapdf(param(30),0.4,0.2);          % tau_D
+prior(40) = logBetapdf(param(30),0.4,0.2);          % tau_k
 
-if all(isfinite(prior))==0 | all(isreal(prior))==0;
+if all(isfinite(prior))==0 || all(isreal(prior))==0
     logpriorTHANK=-1e10;
 else
     logpriorTHANK=sum(prior);

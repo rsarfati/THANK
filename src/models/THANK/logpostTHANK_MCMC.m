@@ -1,4 +1,4 @@
-function logpost = logpostTHANK_MCMC(param,T,y)
+function logpost = logpostTHANK_MCMC(param, T, y)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Date: December 22, 2009
@@ -16,20 +16,20 @@ if logprior == -1e10
     return    
 else
     % Solution of the model
-    [G1,C,M,eu,SDX,H,NY,NX] = modelTHANK(param);
+    [G1, C, M, eu, SDX, H, NY, ~] = modelTHANK(param);
     if eu ~= [1 1]'
         logpost = -1e10;
         return
     else
         % initializing the Kalman filter
-        shat = zeros(NY,1);
-        Q = M * SDX * SDX' * M';
-        sig = disclyap_fast(G1,Q);
+        shat  = zeros(NY,1);
+        Q     = M * (SDX * SDX') * M';
+        sig   = disclyap_fast(G1, Q);
         LOGLH = 0;
 
         % Kalman filter recursion delivering log-likelihood
         for t = 1:T
-            [shat, sig, loglh] = kfilter(y(t,:)', H, C, G1, shat, sig, 0,Q);
+            [shat, sig, loglh] = kfilter(y(t,:)', H, C, G1, shat, sig, 0, Q);
             LOGLH = LOGLH + loglh;
         end
         logpost = (LOGLH + logprior);

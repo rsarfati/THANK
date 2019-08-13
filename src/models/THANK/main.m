@@ -96,33 +96,34 @@ for i=2:M
         end
     end
 end
-ACCrate2=count/M;
+ACCrate2 = count/M;
 
 % Third chain
 P3 = zeros(M,length(xh));
 logpostOLD = -1e+10;
-while logpostOLD==-1e+10
+while logpostOLD == -1e+10
     P3(1,:) = mvnrnd(postmode,4*HH*const^2,1);
-    logpostOLD=logpostTHANK_MCMC(P3(1,:),T,y);
+    logpostOLD = logpostTHANK_MCMC(P3(1,:),T,y);
 end
 
 % Metropolis algorithm
 count=0;
 for i=2:M
-    if i==100*floor(.01*i)
+    if i == 100*floor(.01*i)
         i
     end
-    P3(i,:)=mvnrnd(P3(i-1,:),HH*const^2,1);
-    logpostNEW=logpostTHANK_MCMC(P3(i,:),T,y);
-    if logpostNEW>logpostOLD
-        logpostOLD=logpostNEW;
-        count=count+1;
+    P3(i,:) = mvnrnd(P3(i-1,:),HH*const^2,1);
+    logpostNEW = logpostTHANK_MCMC(P3(i,:),T,y);
+    
+    if logpostNEW > logpostOLD
+        logpostOLD = logpostNEW;
+        count = count + 1;
     else
         if rand(1) < exp(logpostNEW-logpostOLD) 
-            logpostOLD=logpostNEW;
-            count=count+1;
+            logpostOLD = logpostNEW;
+            count = count+1;
         else
-            P3(i,:)=P3(i-1,:);
+            P3(i,:) = P3(i-1,:);
         end
     end
 end
