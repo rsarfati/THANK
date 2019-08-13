@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Date: August 13, 2019
 % This is the main code that controls the estimation of the baseline DSGE
-% model in a paper by
+% model in "Investment Shocks and Business Cycles" by
 % Justiniano, Primiceri and Tambalotti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
