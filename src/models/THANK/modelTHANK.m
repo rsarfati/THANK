@@ -65,13 +65,12 @@ lam_s = 38;
 c_h   = 39;
 c_s   = 40;
 t_h   = 41;
-k_s   = 42;
 
-ey     = 43; %% TODO: Checking here...
-elam_s = 44;
-elam_h = 45;
+ey     = 42; %% TODO: Checking here...
+elam_s = 43;
+elam_h = 44;
 
-var_len = 45;
+var_len = 44;
 
 % variables for the flex prices and wages version of the model
 % -------------------------------------------------------------------------
@@ -140,9 +139,17 @@ lambdaexstar = 9;
 phiexstar    = 10;
 Rkexstar     = 11;
 i_s_ex_star  = 12;
+
+yex          = 13;
+lam_s_ex     = 14;
+lam_h_ex     = 15;
+
+yex_star      = 16;
+lam_s_ex_star = 17;
+lam_h_ex_star = 18;
 % === * css / (expg * c_s_ss - h * css)
 
-NETA = 7+5;
+NETA = 7 + 5 + 6;
 
 % -------------------------------------------------------------------------
 % Index for the parameters
@@ -234,17 +241,16 @@ i_s_ss = i_s_Lss * expLss;
 
 lam_h_ss = lam_h_Lss / expLss;
 lam_s_ss = lam_s_Lss / expLss;
-
-R_ss = (pi*expg/beta) * lam_s_ss/(sigma*lam_s_ss + (1-sigma)*lam_h_ss);
+%R_ss = (pi*expg/beta) * lam_s_ss/(sigma*lam_s_ss + (1-sigma)*lam_h_ss);
 
 % -------------------------------------------------------------------------
 % System Matrices [stars = flexible price equilibrium]
 % -------------------------------------------------------------------------
-GAM0 = zeros(NY,NY);
-GAM1 = zeros(NY,NY);
-PSI  = zeros(NY,NX);
-PPI  = zeros(NY,NETA);
-C    = zeros(NY,1);
+GAM0 = zeros(NY, NY);
+GAM1 = zeros(NY, NY);
+PSI  = zeros(NY, NX);
+PPI  = zeros(NY, NETA);
+C    = zeros(NY, 1);
 
 % eq 1 and 2, production function (y, ystar)
 % -------------------------------------------------------------------------
@@ -291,30 +297,32 @@ GAM0(p, ep)      = -beta / (1 + iotap*beta);
 GAM1(p, p)       = iotap / (1 + iotap*beta);
 GAM0(p, mc)      = -((1 - beta*xip) * (1 - xip) / ((1 + iotap * beta) * xip)); % kappa_p
 GAM0(p, lambdap) = -1; % normalized
-
 %===
 GAM0(Rstar, mcstar) = 1;
 %===
 
-%% TODO - CONSUMPTION
+
 % eq 9 and 10, consumption foc (c and cstar)
 % -------------------------------------------------------------------------
-GAM0(c, lambda) = (expg - h*beta)*(expg - h);
-GAM0(c, b)      = -(expg - h*beta*rhob)*(expg - h) / [(1-rhob)*(expg-h*beta*rhob)*(expg-h) / (expg*h+expg^2+beta*h^2)];
-GAM0(c, z)      = -(beta*h*expg*rhoz - h*expg);
-GAM0(c, c)      = (expg^2 + beta*h^2);
-GAM0(c, ec)     = -beta * h * expg;
-GAM1(c, c)      =         h * expg;
+GAM0(c, c)   = 1;
+GAM0(c, c_h) = -theta;
+GAM0(c, c_s) = -(1-theta);
 
+GAM0(c_h, c_h) = 1;
+GAM0(c_h, w)   = -1;
+GAM0(c_h, L)   = -1;
+GAM0(c_h, t_h) = -yss / c_h_ss;
 %===
-GAM0(cstar, lambdastar) = (expg-h*beta)*(expg-h);
-GAM0(cstar, b) = -(expg-h*beta*rhob)*(expg-h)/[(1-rhob)*(expg-h*beta*rhob)*(expg-h)/(expg*h+expg^2+beta*h^2)];
-GAM0(cstar, z) = -(beta*h*expg*rhoz-h*expg);
-GAM0(cstar, cstar) = (expg^2+beta*h^2);
-GAM0(cstar, ecstar) = -beta*h*expg;
-GAM1(cstar, cstar) = expg*h;
+GAM0(cstar, cstar)    = GAM0(c, c);
+GAM0(cstar, c_h_star) = GAM0(c, c_h);
+GAM0(cstar, c_s_star) = GAM0(c, c_h);
+
+GAM0(c_h_star, c_h_star) = GAM0(c_h, c_h);
+GAM0(c_h_star, wstar)    = GAM0(c_h, w);
+GAM0(c_h_star, Lstar)    = GAM0(c_h, L);
+GAM0(c_h_star, t_h_star) = GAM0(c_h, t_h);
 %===
-%%
+
 
 % eq 11 and 12, Euler equation (lambda and lambdastar)
 % -------------------------------------------------------------------------
@@ -482,124 +490,139 @@ GAM0(wstar, wgapstar) = 1;
 
 % eq 25 and 26, wage gap (wgap and wgapstar)
 % -------------------------------------------------------------------------
-GAM0(wgap,wgap) = 1;
-GAM0(wgap,w) = -1;
-GAM0(wgap,b) = 1/[(1-rhob)*(expg-h*beta*rhob)*(expg-h)/(expg*h+expg^2+beta*h^2)];
-GAM0(wgap,L) = niu;
-GAM0(wgap,lambda) = -1;
-
+GAM0(wgap, wgap)   = 1;
+GAM0(wgap, w)      = -1;
+% New normalization
+GAM0(wgap, b)      = 1 / ((1 - rhob) * (sigma*lam_s_ss + (1-sigma)*lam_h_ss) * ...
+                           (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) / ...
+                           (h*css * (sigma * lam_s_ss * (expg * c_h_ss - h * css) + ...
+                           (1-sigma) * lam_h_ss * (expg * c_s_ss - h * css))));
+%GAM0(wgap, b)      = 1 / ((1 - rhob) * (expg - h * beta * rhob) * (expg - h) / ...
+%                          (expg * h + expg^2 + beta * h^2)); 
+GAM0(wgap, L)      = niu;
+GAM0(wgap, lambda) = -1;
 % ===
-GAM0(wgapstar,wgapstar) = 1;
-GAM0(wgapstar,wstar) = -1;
-GAM0(wgapstar,b) = 1/[(1-rhob)*(expg-h*beta*rhob)*(expg-h)/(expg*h+expg^2+beta*h^2)];
-GAM0(wgapstar,Lstar) = niu;
-GAM0(wgapstar,lambdastar) = -1;
+GAM0(wgapstar, wgapstar)   = GAM0(wgap, wgap);
+GAM0(wgapstar, wstar)      = GAM0(wgap, w);
+GAM0(wgapstar, b)          = GAM0(wgap, b);
+GAM0(wgapstar, Lstar)      = GAM0(wgap, L);
+GAM0(wgapstar, lambdastar) = GAM0(wgap, lambda);
 % ===
 
 
 % eq 27, monetary policy rule (R)
 % ----------------------------------------
-GAM0(R,R) = 1;
-GAM1(R,R) = rhoR;
-GAM0(R,p) = -(1-rhoR)*fp;
-GAM0(R,gdp) = -(1-rhoR)*fy-fdy;
-GAM0(R,gdpstar) = (1-rhoR)*fy+fdy;
-GAM1(R,gdp) = -fdy;
-GAM1(R,gdpstar) = fdy;
-GAM0(R,mp) = -1;
+GAM0(R, R)       = 1;
+GAM1(R, R)       = rhoR;
+GAM0(R, p)       = -(1 - rhoR) * fp;
+GAM0(R, gdp)     = -(1 - rhoR) * fy - fdy;
+GAM0(R, gdpstar) =  (1 - rhoR) * fy + fdy;
+GAM1(R, gdp)     = -fdy;
+GAM1(R, gdpstar) =  fdy;
+GAM0(R, mp)      = -1;
 
 
 % eq 28 and 29,definition of gdp (gdp and gdpstar)
 % -------------------------------------------------------------------------
-GAM0(gdp,gdp) =  -1;
-GAM0(gdp,y) = 1;
-GAM0(gdp,u) =  -kss*Rkss/yss;
-
+GAM0(gdp, gdp) =  -1;
+GAM0(gdp, y)   =   1;
+GAM0(gdp, u)   =  -kss * Rkss / yss;
 % ===
-GAM0(gdpstar,gdpstar) =  -1;
-GAM0(gdpstar,ystar) = 1;
-GAM0(gdpstar,ustar) =  -kss*Rkss/yss;
+GAM0(gdpstar, gdpstar) = GAM0(gdp, gdp);
+GAM0(gdpstar, ystar)   = GAM0(gdp, y);
+GAM0(gdpstar, ustar)   = GAM0(gdp, u);
 % ===
 
 
 % eq 30 and 31, market clearing (u and ustar)
 % -------------------------------------------------------------------------
-GAM0(u,c) = css/yss;
-GAM0(u,i_s) = i_s_ss/yss;
-GAM0(u,y) = -1/gss;
-GAM0(u,g) = 1/gss;
-GAM0(u,u) = kss*Rkss/yss;
-
+GAM0(u, c)   = css / yss;
+GAM0(u, i_s) = (1 - theta) * i_s_ss / yss;
+GAM0(u, y)   = -1 / gss;
+GAM0(u, g)   =  1 / gss;
+GAM0(u, u)   = kss * Rkss / yss;
 % ===
-GAM0(ustar,cstar) = css/yss;
-GAM0(ustar,i_s_star) = i_s_ss/yss;
-GAM0(ustar,ystar) = -1/gss;
-GAM0(ustar,g) = 1/gss;
-GAM0(ustar,ustar) = kss*Rkss/yss;
+GAM0(ustar, cstar)    = GAM0(u, c);
+GAM0(ustar, i_s_star) = GAM0(u, i_s);
+GAM0(ustar, ystar)    = GAM0(u, y);
+GAM0(ustar, g)        = GAM0(u, g);
+GAM0(ustar, ustar)    = GAM0(u, u);
 % ===
 
 
 % eq 32 - 40, exogenous shocks
 % -------------------------------------------------------------------------
-GAM0(z,z) = 1; GAM1(z,z) = rhoz; PSI(z,zs) = 1;
-GAM0(g,g) = 1; GAM1(g,g) = rhog; PSI(g,gs) = 1;
+GAM0(z, z) = 1; GAM1(z, z) = rhoz; PSI(z, zs) = 1;
+GAM0(g, g) = 1; GAM1(g, g) = rhog; PSI(g, gs) = 1;
 
-GAM0(lambdaw,lambdaw) = 1; GAM1(lambdaw,lambdaw) = rholambdaw; GAM0(lambdaw,ARMAlambdaw) = -1; GAM1(lambdaw,ARMAlambdaw) = -rhoARMAlambdaw;
-GAM0(ARMAlambdaw,ARMAlambdaw) = 1; PSI(ARMAlambdaw,lambdaws) = 1;
+GAM0(lambdaw,         lambdaw) =  1; GAM1(lambdaw, lambdaw)     = rholambdaw; 
+GAM0(lambdaw,     ARMAlambdaw) = -1; GAM1(lambdaw, ARMAlambdaw) = -rhoARMAlambdaw;
+GAM0(ARMAlambdaw, ARMAlambdaw) =  1; PSI(ARMAlambdaw, lambdaws) = 1;
 
-GAM0(miu,miu) = 1; GAM1(miu,miu) = rhomiu; PSI(miu,mius) = 1;
+GAM0(miu, miu) = 1; GAM1(miu, miu) = rhomiu; PSI(miu, mius) = 1;
 
-GAM0(lambdap,lambdap) = 1; GAM1(lambdap,lambdap) = rholambdap; GAM0(lambdap,ARMAlambdap) = -1; GAM1(lambdap,ARMAlambdap) = -rhoARMAlambdap;
-GAM0(ARMAlambdap,ARMAlambdap) = 1; PSI(ARMAlambdap,lambdaps) = 1;
+GAM0(lambdap,         lambdap) =  1; GAM1(lambdap,    lambdap)  = rholambdap; 
+GAM0(lambdap,     ARMAlambdap) = -1; GAM1(lambdap, ARMAlambdap) = -rhoARMAlambdap;
+GAM0(ARMAlambdap, ARMAlambdap) =  1; PSI(ARMAlambdap, lambdaps) = 1;
 
-GAM0(b,b) = 1; GAM1(b,b) = rhob; PSI(b,bs) = 1;
-GAM0(mp,mp) = 1; GAM1(mp,mp) = rhomp; PSI(mp,Rs) = 1;
+GAM0(b, b)   = 1; GAM1(b, b)   = rhob;  PSI(b, bs)  = 1;
+GAM0(mp, mp) = 1; GAM1(mp, mp) = rhomp; PSI(mp, Rs) = 1;
 
 
 % eq 41 - 52, expectational terms
 % -------------------------------------------------------------------------
-GAM0(ep,p) = 1; GAM1(ep,ep) = 1; PPI(ep,pex) = 1;
-GAM0(ec,c) = 1; GAM1(ec,ec) = 1; PPI(ec,cex) = 1;
-GAM0(elambda,lambda) = 1; GAM1(elambda,elambda) = 1; PPI(elambda,lambdaex) = 1;
-GAM0(ephi,phi) = 1; GAM1(ephi,ephi) = 1; PPI(ephi,phiex) = 1;
-GAM0(eRk,Rk) = 1; GAM1(eRk,eRk) = 1; PPI(eRk,Rkex) = 1;
-GAM0(e_i_s,i_s) = 1; GAM1(e_i_s,e_i_s) = 1; PPI(e_i_s,i_s_ex) = 1;
-GAM0(ew,w) = 1; GAM1(ew,ew) = 1; PPI(ew,wex) = 1;
+GAM0(ep,      p)      = 1; GAM1(ep,      ep)      = 1; PPI(ep,      pex)      = 1;
+GAM0(ec,      c)      = 1; GAM1(ec,      ec)      = 1; PPI(ec,      cex)      = 1;
+GAM0(elambda, lambda) = 1; GAM1(elambda, elambda) = 1; PPI(elambda, lambdaex) = 1;
+GAM0(ephi,    phi)    = 1; GAM1(ephi,    ephi)    = 1; PPI(ephi,    phiex)    = 1;
+GAM0(eRk,     Rk)     = 1; GAM1(eRk,     eRk)     = 1; PPI(eRk,     Rkex)     = 1;
+GAM0(e_i_s,   i_s)    = 1; GAM1(e_i_s,   e_i_s)   = 1; PPI(e_i_s,   i_s_ex)   = 1;
+GAM0(ew,      w)      = 1; GAM1(ew,      ew)      = 1; PPI(ew,      wex)      = 1;
+
+% New parameters
+GAM0(ey,      y)      = 1; GAM1(ey,      ey)      = 1; PPI(ey,      yex)      = 1;
+GAM0(elam_s,  lam_s)  = 1; GAM1(elam_s,  elam_s)  = 1; PPI(elam_s,  lam_s_ex) = 1;
+GAM0(elam_h,  lam_h)  = 1; GAM1(elam_h,  elam_h)  = 1; PPI(elam_h,  lam_h_ex) = 1;
 
 % ===
-GAM0(ecstar,cstar) = 1; GAM1(ecstar,ecstar) = 1; PPI(ecstar,cexstar) = 1;
-GAM0(elambdastar,lambdastar) = 1; GAM1(elambdastar,elambdastar) = 1; PPI(elambdastar,lambdaexstar) = 1;
-GAM0(ephistar,phistar) = 1; GAM1(ephistar,ephistar) = 1; PPI(ephistar,phiexstar) = 1;
-GAM0(eRkstar,Rkstar) = 1; GAM1(eRkstar,eRkstar) = 1; PPI(eRkstar,Rkexstar) = 1;
-GAM0(e_i_s_star,i_s_star) = 1; GAM1(e_i_s_star,e_i_s_star) = 1; PPI(e_i_s_star,i_s_ex_star) = 1;
+GAM0(ecstar,      cstar)      = 1; GAM1(ecstar,      ecstar)      = 1; PPI(ecstar,      cexstar)      = 1;
+GAM0(elambdastar, lambdastar) = 1; GAM1(elambdastar, elambdastar) = 1; PPI(elambdastar, lambdaexstar) = 1;
+GAM0(ephistar,    phistar)    = 1; GAM1(ephistar,    ephistar)    = 1; PPI(ephistar,    phiexstar)    = 1;
+GAM0(eRkstar,     Rkstar)     = 1; GAM1(eRkstar,     eRkstar)     = 1; PPI(eRkstar,     Rkexstar)     = 1;
+GAM0(e_i_s_star,  i_s_star)   = 1; GAM1(e_i_s_star,  e_i_s_star)  = 1; PPI(e_i_s_star,  i_s_ex_star)  = 1;
+
+% New parameters
+GAM0(ey_star,      y_star)     = 1; GAM1(ey_star,      ey_star)      = 1; PPI(ey_star,      yex_star)      = 1;
+GAM0(elam_s_star,  lam_s_star) = 1; GAM1(elam_s_star,  elam_s_star)  = 1; PPI(elam_s_star,  lam_s_ex_star) = 1;
+GAM0(elam_h_star,  lam_h_star) = 1; GAM1(elam_h_star,  elam_h_star)  = 1; PPI(elam_h_star,  lam_h_ex_star) = 1;
 % ===
 
 % eq 53 - 56, lagged variables
 %--------------------------------------------------------------------------
-GAM0(gdp_1,gdp_1) = 1; GAM1(gdp_1,gdp) = 1;
-GAM0(c_1,c_1) = 1; GAM1(c_1,c) = 1;
-GAM0(i_s_1,i_s_1) = 1; GAM1(i_s_1,i_s) = 1;
-GAM0(w_1,w_1) = 1; GAM1(w_1,w) = 1;
+GAM0(gdp_1, gdp_1) = 1; GAM1(gdp_1, gdp) = 1;
+GAM0(c_1,   c_1)   = 1; GAM1(c_1,   c)   = 1;
+GAM0(i_s_1, i_s_1) = 1; GAM1(i_s_1, i_s) = 1;
+GAM0(w_1,   w_1)   = 1; GAM1(w_1,   w)   = 1;
 
 
 % Solution of the RE system of equations using Chris Sims' Gensys
 % -------------------------------------------------------------------------
-[G1,C,impact,fmat,fwt,ywt,gev,eu] = GENSYS(GAM0,GAM1,C,PSI,PPI) ;
+[G1, C, impact, fmat, fwt, ywt, gev, eu] = GENSYS(GAM0, GAM1, C, PSI, PPI) ;
 
 
 % Matrix that maps endogenous variables to observables
 % -------------------------------------------------------------------------
-zmat = zeros(7,size(G1,2));
-zmat(1,gdp) = 1; zmat(1,gdp_1) = -1; zmat(1,z) = 1;
-zmat(2,c) = 1; zmat(2,c_1) = -1; zmat(2,z) = 1;
-zmat(3,i_s) = 1; zmat(3,i_s_1) = -1; zmat(3,z) = 1;
-zmat(4,L) = 1;
-zmat(5,w) = 1; zmat(5,w_1) = -1; zmat(5,z) = 1;
-zmat(6,p) = 1;
-zmat(7,R) = 1;
+zmat = zeros(7, size(G1,2));
+zmat(1, gdp) = 1; zmat(1, gdp_1) = -1; zmat(1, z) = 1;
+zmat(2, c)   = 1; zmat(2, c_1)   = -1; zmat(2, z) = 1;
+zmat(3, i_s) = 1; zmat(3, i_s_1) = -1; zmat(3, z) = 1;
+zmat(4, L)   = 1;
+zmat(5, w)   = 1; zmat(5, w_1)   = -1; zmat(5, z) = 1;
+zmat(6, p)   = 1;
+zmat(7, R)   = 1;
 
 
-% constants in the observation equation
+% Constants in the observation equation
 % -------------------------------------------------------------------------
 C = zeros(7,1);
 C(1) = gamma100;
@@ -608,4 +631,4 @@ C(3) = gamma100;
 C(4) = Lss;
 C(5) = gamma100;
 C(6) = pss100;
-C(7) = pss100+rss100;
+C(7) = pss100 + rss100;
