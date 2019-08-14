@@ -87,7 +87,7 @@ Rstar       = var_len + 9;
 ustar       = var_len + 10;
 phistar     = var_len + 11;
 i_s_star    = var_len + 12;
-kbar_s_star    = var_len + 13;
+kbar_s_star = var_len + 13;
 wgapstar    = var_len + 14;
 gdpstar     = var_len + 15;
 
@@ -98,11 +98,11 @@ eRkstar     = var_len + 19;
 e_i_s_star  = var_len + 20;
 
 % New variables:
-lam_h_star = var_len + 21;
-lam_s_star = var_len + 22;
-c_h_star   = var_len + 23;
-c_s_star   = var_len + 24;
-t_h_star   = var_len + 25;
+lam_h_star  = var_len + 21;
+lam_s_star  = var_len + 22;
+c_h_star    = var_len + 23;
+c_s_star    = var_len + 24;
+t_h_star    = var_len + 25;
 
 ey_star     = var_len + 26;
 elam_h_star = var_len + 27;
@@ -133,22 +133,22 @@ phiex    = 4;
 Rkex     = 5;
 i_s_ex   = 6;
 wex      = 7;
-
 % ===
 cexstar      = 8;
 lambdaexstar = 9;
 phiexstar    = 10;
 Rkexstar     = 11;
 i_s_ex_star  = 12;
+% === 
 
-yex          = 13;
-lam_s_ex     = 14;
-lam_h_ex     = 15;
-
+yex           = 13;
+lam_s_ex      = 14;
+lam_h_ex      = 15;
+% ===
 yex_star      = 16;
 lam_s_ex_star = 17;
 lam_h_ex_star = 18;
-% === * css / (expg * c_s_ss - h * css)
+% ===
 
 NETA = 7 + 5 + 6;
 
@@ -189,6 +189,7 @@ rhoARMAlambdap = param(27); rhoARMAlambdaw = param(28);
 % Standard deviations
 sdR = param(29); sdz = param(30); sdg = param(31); sdmiu = param(32); 
 sdlambdap = param(33); sdlambdaw = param(34); sdb = param(35);
+
 SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
 
 % New parameters
@@ -212,22 +213,24 @@ rss100 = rss * 100; % REMOVED: pss    = pss100 / 100;
 gss    = 1 / (1-gss);
 
 expLss = exp(Lss);
-Rkss   = (expg/beta-1+delta); % RHO
+Rkss   = (expg / beta - 1 + delta); % RHO
 mcss   = 1 / (1 + lambdapss);
-wss    = (mcss*((1-alpha)^(1-alpha))/((alpha^(-alpha))*Rkss^alpha))^(1/(1-alpha));
+wss    = (mcss * ((1 - alpha) ^ (1 - alpha)) / ... 
+            ((alpha ^ (-alpha)) * Rkss ^ alpha)) ^ (1 / (1 - alpha));
+
 % Compute ratios wrt L_ss
-kLss   = (wss/Rkss) * alpha/(1-alpha);
-FLss   = (kLss^alpha - Rkss*kLss - wss);
-yLss   = kLss^alpha - FLss;
+kLss   = (wss / Rkss) * alpha / (1 - alpha);
+FLss   = kLss ^ alpha - Rkss * kLss - wss;
+yLss   = kLss ^ alpha - FLss;
 
 i_s_Lss = (1 - (1-delta) * exp(-gamma)) * expg * kLss / (1-theta); %%%
 cLss    = yLss/gss - (1-theta) * i_s_Lss; %%%
 
 c_h_Lss = wss + t_h_0_Lss + tau_k * Rkss * kLss; %%%
-c_s_Lss = (1/(1-theta))*cLss - (theta/(1-theta))*c_h_Lss; %%%
+c_s_Lss = (1 / (1 - theta)) * cLss - (theta / (1 - theta)) * c_h_Lss; %%%
 
-lam_h_Lss = expg / (expg*c_h_Lss - h*cLss);
-lam_s_Lss = expg / (expg*c_s_Lss - h*cLss);
+lam_h_Lss = expg / (expg * c_h_Lss - h * cLss);
+lam_s_Lss = expg / (expg * c_s_Lss - h * cLss);
 
 % Multiply by L_ss again
 kss    = kLss * expLss;
@@ -242,7 +245,6 @@ i_s_ss = i_s_Lss * expLss;
 
 lam_h_ss = lam_h_Lss / expLss;
 lam_s_ss = lam_s_Lss / expLss;
-%R_ss = (pi*expg/beta) * lam_s_ss/(sigma*lam_s_ss + (1-sigma)*lam_h_ss);
 
 % -------------------------------------------------------------------------
 % System Matrices [stars = flexible price equilibrium]
@@ -461,19 +463,19 @@ GAM0(kbar_s, miu)    = -(1-(1-delta) * exp(-gamma));
 GAM0(kbar_s, i_s)    = -(1-(1-delta) * exp(-gamma));
 GAM1(kbar_s, kbar_s) =     (1-delta) * exp(-gamma);
 GAM0(kbar_s, z)      =     (1-delta) * exp(-gamma);
-
 % ===
-GAM0(kbar_s_star, kbar_s_star) = 1;
-GAM0(kbar_s_star, miu)         = -(1-(1-delta) * exp(-gamma));
-GAM0(kbar_s_star, i_s_star)    = -(1-(1-delta) * exp(-gamma));
-GAM1(kbar_s_star, kbar_s_star) =     (1-delta) * exp(-gamma);
-GAM0(kbar_s_star, z)           =     (1-delta) * exp(-gamma);
+GAM0(kbar_s_star, kbar_s_star) = GAM0(kbar_s, kbar_s);
+GAM0(kbar_s_star, miu)         = GAM0(kbar_s, miu);
+GAM0(kbar_s_star, i_s_star)    = GAM0(kbar_s, i_s);
+GAM1(kbar_s_star, kbar_s_star) = GAM1(kbar_s, kbar_s);
+GAM0(kbar_s_star, z)           = GAM0(kbar_s, z);
 % ===
 
 
 % eq 23 and 24, wage Phillips curve (w and wstar)
 % -------------------------------------------------------------------------
 kappaw = (1-xiw*beta) * (1-xiw) / (xiw * (1+beta) * (1 + niu*(1 + 1/lambdawss)));
+
 GAM0(w, w)       = 1;
 GAM0(w, ew)      = -beta / (1 + beta);
 GAM0(w, wgap)    = kappaw;
@@ -481,7 +483,7 @@ GAM0(w, p)       = (1 + beta*iotaw) / (1 + beta);
 GAM0(w, ep)      = -beta / (1 + beta);
 GAM0(w, z)       = (1 + beta*iotaw - beta*rhoz)/(1 + beta);
 GAM0(w, lambdaw) = -1;
-GAM1(w, w)       =     1 / (1+beta);
+GAM1(w, w)       = 1 / (1+beta);
 GAM1(w, p)       = iotaw / (1+beta);
 GAM1(w, z)       = iotaw / (1+beta);
 % ===
@@ -489,17 +491,14 @@ GAM0(wstar, wgapstar) = 1;
 % ===
 
 
-% eq 25 and 26, wage gap (wgap and wgapstar)
+% eq 25 and 26, wage gap (wgap and wgapstar) TODO: normalization!
 % -------------------------------------------------------------------------
 GAM0(wgap, wgap)   = 1;
 GAM0(wgap, w)      = -1;
-% New normalization
 GAM0(wgap, b)      = 1 / ((1 - rhob) * (sigma*lam_s_ss + (1-sigma)*lam_h_ss) * ...
                            (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) / ...
                            (h*css * (sigma * lam_s_ss * (expg * c_h_ss - h * css) + ...
                            (1-sigma) * lam_h_ss * (expg * c_s_ss - h * css))));
-%GAM0(wgap, b)      = 1 / ((1 - rhob) * (expg - h * beta * rhob) * (expg - h) / ...
-%                          (expg * h + expg^2 + beta * h^2)); 
 GAM0(wgap, L)      = niu;
 GAM0(wgap, lambda) = -1;
 % ===
