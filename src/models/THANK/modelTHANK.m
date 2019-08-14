@@ -70,6 +70,7 @@ ey     = 42; %% TODO: Checking here...
 elam_s = 43;
 elam_h = 44;
 
+
 var_len = 44;
 
 % variables for the flex prices and wages version of the model
@@ -552,21 +553,19 @@ GAM0(ustar, ustar)    = GAM0(u, u);
 
 % eq 32 - 40, exogenous shocks
 % -------------------------------------------------------------------------
-GAM0(z, z) = 1; GAM1(z, z) = rhoz; PSI(z, zs) = 1;
-GAM0(g, g) = 1; GAM1(g, g) = rhog; PSI(g, gs) = 1;
+GAM0(z,   z)   = 1; GAM1(z,   z)   = rhoz;   PSI(z,   zs)   = 1;
+GAM0(g,   g)   = 1; GAM1(g,   g)   = rhog;   PSI(g,   gs)   = 1;
+GAM0(miu, miu) = 1; GAM1(miu, miu) = rhomiu; PSI(miu, mius) = 1;
+GAM0(b,   b)   = 1; GAM1(b,   b)   = rhob;   PSI(b,   bs)   = 1;
+GAM0(mp,  mp)  = 1; GAM1(mp,  mp)  = rhomp;  PSI(mp,  Rs)   = 1;
 
 GAM0(lambdaw,         lambdaw) =  1; GAM1(lambdaw, lambdaw)     = rholambdaw; 
 GAM0(lambdaw,     ARMAlambdaw) = -1; GAM1(lambdaw, ARMAlambdaw) = -rhoARMAlambdaw;
 GAM0(ARMAlambdaw, ARMAlambdaw) =  1; PSI(ARMAlambdaw, lambdaws) = 1;
 
-GAM0(miu, miu) = 1; GAM1(miu, miu) = rhomiu; PSI(miu, mius) = 1;
-
 GAM0(lambdap,         lambdap) =  1; GAM1(lambdap,    lambdap)  = rholambdap; 
 GAM0(lambdap,     ARMAlambdap) = -1; GAM1(lambdap, ARMAlambdap) = -rhoARMAlambdap;
 GAM0(ARMAlambdap, ARMAlambdap) =  1; PSI(ARMAlambdap, lambdaps) = 1;
-
-GAM0(b, b)   = 1; GAM1(b, b)   = rhob;  PSI(b, bs)  = 1;
-GAM0(mp, mp) = 1; GAM1(mp, mp) = rhomp; PSI(mp, Rs) = 1;
 
 
 % eq 41 - 52, expectational terms
@@ -578,7 +577,6 @@ GAM0(ephi,    phi)    = 1; GAM1(ephi,    ephi)    = 1; PPI(ephi,    phiex)    = 
 GAM0(eRk,     Rk)     = 1; GAM1(eRk,     eRk)     = 1; PPI(eRk,     Rkex)     = 1;
 GAM0(e_i_s,   i_s)    = 1; GAM1(e_i_s,   e_i_s)   = 1; PPI(e_i_s,   i_s_ex)   = 1;
 GAM0(ew,      w)      = 1; GAM1(ew,      ew)      = 1; PPI(ew,      wex)      = 1;
-
 % New parameters
 GAM0(ey,      y)      = 1; GAM1(ey,      ey)      = 1; PPI(ey,      yex)      = 1;
 GAM0(elam_s,  lam_s)  = 1; GAM1(elam_s,  elam_s)  = 1; PPI(elam_s,  lam_s_ex) = 1;
@@ -590,7 +588,6 @@ GAM0(elambdastar, lambdastar) = 1; GAM1(elambdastar, elambdastar) = 1; PPI(elamb
 GAM0(ephistar,    phistar)    = 1; GAM1(ephistar,    ephistar)    = 1; PPI(ephistar,    phiexstar)    = 1;
 GAM0(eRkstar,     Rkstar)     = 1; GAM1(eRkstar,     eRkstar)     = 1; PPI(eRkstar,     Rkexstar)     = 1;
 GAM0(e_i_s_star,  i_s_star)   = 1; GAM1(e_i_s_star,  e_i_s_star)  = 1; PPI(e_i_s_star,  i_s_ex_star)  = 1;
-
 % New parameters
 GAM0(ey_star,      y_star)     = 1; GAM1(ey_star,      ey_star)      = 1; PPI(ey_star,      yex_star)      = 1;
 GAM0(elam_s_star,  lam_s_star) = 1; GAM1(elam_s_star,  elam_s_star)  = 1; PPI(elam_s_star,  lam_s_ex_star) = 1;
@@ -603,7 +600,7 @@ GAM0(gdp_1, gdp_1) = 1; GAM1(gdp_1, gdp) = 1;
 GAM0(c_1,   c_1)   = 1; GAM1(c_1,   c)   = 1;
 GAM0(i_s_1, i_s_1) = 1; GAM1(i_s_1, i_s) = 1;
 GAM0(w_1,   w_1)   = 1; GAM1(w_1,   w)   = 1;
-
+%% TODO: throw in new lags?
 
 % Solution of the RE system of equations using Chris Sims' Gensys
 % -------------------------------------------------------------------------
