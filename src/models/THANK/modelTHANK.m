@@ -141,7 +141,8 @@ NETA = 7+5;
 % -------------------------------------------------------------------------
 % Index for the parameters
 % -------------------------------------------------------------------------
-% calibrated parameters
+
+% Calibrated parameters
 gss       = 0.22;  % capital depreciation rate
 delta     = 0.025; % steady state government spending to GDP ratio
 t_h_0_Lss = 0.0;   % New parameter! Might estimate.
@@ -175,13 +176,12 @@ rhoARMAlambdap = param(27); rhoARMAlambdaw = param(28);
 sdR = param(29); sdz = param(30); sdg = param(31); sdmiu = param(32); 
 sdlambdap = param(33); sdlambdaw = param(34); sdb = param(35);
 SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
+
 % New parameters
 theta       = param(36);
 sigma       = param(37);
 sigma_prime = param(38);
-
-% Where all the cases come in
-tau_D       = param(39);
+tau_D       = param(39); % Where all the cases come in
 tau_k       = param(40);
 
 numpar = 35 + 5;  % Number of parameters

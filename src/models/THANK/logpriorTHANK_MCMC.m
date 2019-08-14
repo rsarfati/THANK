@@ -47,8 +47,8 @@ prior(37) = logBetapdf(param(37),0.9,0.06);         % sigma
 prior(38) = log(normpdf(param(38),0.0,2));          % sigma_prime
 
 % Corresponds to Case 1d
-prior(39) = logBetapdf(param(30),0.4,0.2);          % tau_D
-prior(40) = logBetapdf(param(30),0.4,0.2);          % tau_k
+prior(39) = logBetapdf(param(39),0.4,0.2);          % tau_D
+prior(40) = logBetapdf(param(40),0.4,0.2);          % tau_k
 
 if all(isfinite(prior))==0 || all(isreal(prior))==0
     logpriorTHANK=-1e10;

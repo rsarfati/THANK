@@ -1,8 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Date: August 13, 2019
 % This is the main code that controls the estimation of the baseline DSGE
-% model in "Investment Shocks and Business Cycles" by
-% Justiniano, Primiceri and Tambalotti
+% model in "..." by Bilbiie, Primiceri and Tambalotti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
 
@@ -12,14 +11,15 @@ y = DataTHANK;
 T = length(y);
 
 % initial guess for maximization algorithm
-guess = [0.25 0.21 0.15 0.53 0.85 0.25 0.12 0.5 0.75 0.1 4 0.85 0.75 5 ... 
-       2.5 2 0.1 0.25 0.8 0.25  0.98 0.7 0.95 0.98 0.7 0.15 0.75 0.95 ... 
-       0.2 0.9 0.35 5 0.15 0.2 0.05];
+guess = [0.25 0.21 0.15 0.53 0.85 0.25 0.12 0.50 0.75 0.10 4.00 0.85 0.75 5.00 ... 
+         2.50 2.00 0.10 0.25 0.80 0.25 0.98 0.70 0.95 0.98 0.70 0.15 0.75 0.95 ... 
+         0.20 0.90 0.35 5.00 0.15 0.20 0.05 ...
+         0.33 0.95 0.00 0.33 0.33]; % New parameters
 
 x0 = boundsINV(guess);
 
 % posterior maximization
-[fh,xh,gh,H,itct,fcount,retcodeh] = csminwel('logpostTHANK', x0, ... 
+[fh, xh, gh, H, tct, fcount, retcodeh] = csminwel('logpostTHANK', x0, ... 
                           0.1 * eye(length(x0)), [], 10e-4, 1000, T, y);
 
 % processing the output of the maximization
@@ -29,8 +29,8 @@ HH       = JJ * H * JJ';
 
 % preliminaries for the MCMC algorithm
 const = .4;    % scaling constant for the inverse Hessian
-M = 2000;      % length of each of the two chains
-N = 200;       % number of discarded draws at the beginning of each chain
+M     = 2000;  % length of each of the two chains
+N     = 200;   % number of discarded draws at the beginning of each chain
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Metropolis algorithm
