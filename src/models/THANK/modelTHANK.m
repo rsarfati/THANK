@@ -318,7 +318,7 @@ GAM0(c_h, t_h) = -yss / c_h_ss;
 %===
 GAM0(cstar, cstar)    = GAM0(c, c);
 GAM0(cstar, c_h_star) = GAM0(c, c_h);
-GAM0(cstar, c_s_star) = GAM0(c, c_h);
+GAM0(cstar, c_s_star) = GAM0(c, c_s);
 
 GAM0(c_h_star, c_h_star) = GAM0(c_h, c_h);
 GAM0(c_h_star, wstar)    = GAM0(c_h, w);
