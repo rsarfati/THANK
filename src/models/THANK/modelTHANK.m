@@ -261,9 +261,9 @@ GAM0(y, y) = 1;
 GAM0(y, k) = -((yss + F) / yss) * alpha;     % (1 - lambda_p) ?
 GAM0(y, L) = -((yss + F) / yss) * (1-alpha); % (1 - lambda_p) ?
 % ===
-GAM0(ystar, ystar) = 1;
-GAM0(ystar, kstar) = -((yss + F) / yss) * alpha;
-GAM0(ystar, Lstar) = -((yss + F) / yss) * (1-alpha);
+GAM0(ystar, ystar) = GAM0(y, y);
+GAM0(ystar, kstar) = GAM0(y, k);
+GAM0(ystar, Lstar) = GAM0(y, L);
 % ===
 
 
@@ -274,10 +274,10 @@ GAM0(L, Rk) =  1;
 GAM0(L, w)  = -1;
 GAM0(L, k)  =  1;
 % ===
-GAM0(Lstar, Lstar)  = -1;
-GAM0(Lstar, Rkstar) =  1;
-GAM0(Lstar, wstar)  = -1;
-GAM0(Lstar, kstar)  =  1;
+GAM0(Lstar, Lstar)  = GAM0(L, L);
+GAM0(Lstar, Rkstar) = GAM0(L, Rk);
+GAM0(Lstar, wstar)  = GAM0(L, w);
+GAM0(Lstar, kstar)  = GAM0(L, k);
 % ===
 
 
@@ -287,9 +287,9 @@ GAM0(mc, mc) = 1;
 GAM0(mc, Rk) = -alpha;
 GAM0(mc, w)  = -(1-alpha);
 %===
-GAM0(mcstar, mcstar) = 1;
-GAM0(mcstar, Rkstar) = -alpha;
-GAM0(mcstar, wstar)  = -(1-alpha);
+GAM0(mcstar, mcstar) = GAM0(mc, mc);
+GAM0(mcstar, Rkstar) = GAM0(mc, Rk);
+GAM0(mcstar, wstar)  = GAM0(mc, w);
 %===
 
 
@@ -411,8 +411,8 @@ GAM0(Rkstar, ustar)  = GAM0(Rk, u);
 GAM0(phi, phi)    = 1;
 GAM0(phi, ephi)   = -beta * exp(-gamma) * (1-delta);
 GAM0(phi, z)      = rhoz;
-GAM0(phi, elam_s) = -(1 - beta*exp(-gamma) * (1-delta));
-GAM0(phi, eRk)    = -(1 - beta*exp(-gamma) * (1-delta));
+GAM0(phi, elam_s) = -(1 - beta * exp(-gamma) * (1-delta));
+GAM0(phi, eRk)    = -(1 - beta * exp(-gamma) * (1-delta));
 % ===
 GAM0(phistar, phistar)     = GAM0(phi, phi);
 GAM0(phistar, ephistar)    = GAM0(phi, ephi);
