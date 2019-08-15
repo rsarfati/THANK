@@ -104,7 +104,7 @@ c_h_star    = var_len + 23;
 c_s_star    = var_len + 24;
 t_h_star    = var_len + 25;
 
-ey_star     = var_len + 26;
+eystar      = var_len + 26;
 elam_h_star = var_len + 27;
 elam_s_star = var_len + 28;
 
@@ -362,23 +362,23 @@ GAM0(lambdastar, lam_h_star) = GAM0(lambda, lam_h);
 GAM0(lambdastar, lam_s_star) = GAM0(lambda, lam_s);
 
 GAM0(lam_s_star, lam_s_star) = GAM0(lam_s, lam_s);
-GAM0(lam_s_star, bstar)      = GAM0(lam_s, b);
-GAM0(lam_s_star, zstar)      = GAM0(lam_s, z);
+GAM0(lam_s_star, b)          = GAM0(lam_s, b);
+GAM0(lam_s_star, z)          = GAM0(lam_s, z);
 GAM0(lam_s_star, c_s_star)   = GAM0(lam_s, c_s);
 GAM1(lam_s_star, cstar)      = GAM1(lam_s, c);
 
 GAM0(lam_h_star, lam_h_star) = GAM0(lam_h, lam_h);
-GAM0(lam_h_star, bstar)      = GAM0(lam_h, b);
-GAM0(lam_h_star, zstar)      = GAM0(lam_h, z);
+GAM0(lam_h_star, b)          = GAM0(lam_h, b);
+GAM0(lam_h_star, z)          = GAM0(lam_h, z);
 GAM0(lam_h_star, c_h_star)   = GAM0(lam_h, c_h);
 GAM1(lam_h_star, cstar)      = GAM1(lam_h, c);
 
 GAM0(lam_s_star, Rstar)       = GAM0(lam_s, R);
-GAM0(lam_s_star, zstar)       = GAM0(lam_s, z);
-GAM0(lam_s_star, epstar)      = GAM0(lam_s, ep);
+GAM0(lam_s_star, z)           = GAM0(lam_s, z);
+GAM0(lam_s_star, ep)          = GAM0(lam_s, ep);     % CHECK "epstar"
 GAM0(lam_s_star, elam_s_star) = GAM0(lam_s, elam_s);
 GAM0(lam_s_star, elam_h_star) = GAM0(lam_s, elam_h);
-GAM0(lam_s_star, ey_star)     = GAM0(lam_s, ey);     
+GAM0(lam_s_star, eystar)      = GAM0(lam_s, ey);     
 % ===
 
 
@@ -592,7 +592,7 @@ GAM0(ephistar,    phistar)    = 1; GAM1(ephistar,    ephistar)    = 1; PPI(ephis
 GAM0(eRkstar,     Rkstar)     = 1; GAM1(eRkstar,     eRkstar)     = 1; PPI(eRkstar,     Rkexstar)      = 1;
 GAM0(e_i_s_star,  i_s_star)   = 1; GAM1(e_i_s_star,  e_i_s_star)  = 1; PPI(e_i_s_star,  i_s_ex_star)   = 1;
 % New parameters
-GAM0(ey_star,     y_star)     = 1; GAM1(ey_star,     ey_star)     = 1; PPI(ey_star,     yex_star)      = 1;
+GAM0(eystar,      ystar)      = 1; GAM1(eystar,      eystar)      = 1; PPI(eystar,      yex_star)      = 1;
 GAM0(elam_s_star, lam_s_star) = 1; GAM1(elam_s_star, elam_s_star) = 1; PPI(elam_s_star, lam_s_ex_star) = 1;
 GAM0(elam_h_star, lam_h_star) = 1; GAM1(elam_h_star, elam_h_star) = 1; PPI(elam_h_star, lam_h_ex_star) = 1;
 % ===
@@ -607,7 +607,7 @@ GAM0(w_1,   w_1)   = 1; GAM1(w_1,   w)   = 1;
 
 % Solution of the RE system of equations using Chris Sims' Gensys
 % -------------------------------------------------------------------------
-[G1, C, impact, fmat, fwt, ywt, gev, eu] = GENSYS(GAM0, GAM1, C, PSI, PPI) ;
+[G1, C, impact, fmat, fwt, ywt, gev, eu] = GENSYS(GAM0, GAM1, C, PSI, PPI);
 
 
 % Matrix that maps endogenous variables to observables
