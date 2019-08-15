@@ -1,7 +1,7 @@
-function [G1,C,impact,eu,SDX,zmat,NY,NX] = modelTHANK(param)
+function [G1, C, impact, eu, SDX, zmat, NY, NX] = modelTHANK(param)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % For given parameter values, this function
-% 1) puts the model of Justiniano, Primiceri and Tambalotti (2009)
+% 1) puts the model of Bilibiie, Primiceri, Tambalotti (2019)
 %    in Gensys' canonical form
 % 2) solves the RE system of equations using Chris Sims' Gensys
 % 3) augments the resulting state evolution equation with the observation
@@ -10,7 +10,7 @@ function [G1,C,impact,eu,SDX,zmat,NY,NX] = modelTHANK(param)
 %                               y(t) = zmat * x(t) + C
 %                               e(t) ~ N(0,SDX*SDX')
 %
-% Alejandro Justiniano, Giorgio Primiceri and Andrea Tambalotti  4/30/09
+% Florin Bilbiie, Giorgio Primiceri and Andrea Tambalotti  8/15/19
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % -------------------------------------------------------------------------
@@ -60,18 +60,18 @@ ARMAlambdap = 35; % auxiliary variables for parameterization of
 ARMAlambdaw = 36; % ... ARMA processes for markup shocks
 
 % New variables:
-lam_h = 37;
-lam_s = 38;
-c_h   = 39;
-c_s   = 40;
-t_h   = 41;
+lam_h       = 37;
+lam_s       = 38;
+c_h         = 39;
+c_s         = 40;
+t_h         = 41;
 
-ey     = 42; %% TODO: Checking here...
-elam_s = 43;
-elam_h = 44;
+% New Expectational Variables
+ey          = 42;
+elam_s      = 43;
+elam_h      = 44;
 
-
-var_len = 44;
+var_len     = 44;
 
 % variables for the flex prices and wages version of the model
 % -------------------------------------------------------------------------
@@ -108,7 +108,7 @@ ey_star     = var_len + 26;
 elam_h_star = var_len + 27;
 elam_s_star = var_len + 28;
 
-NY = var_len + 28;
+NY          = var_len + 28;
 
 % -------------------------------------------------------------------------
 % INDEX for Shocks
@@ -121,7 +121,7 @@ lambdaps = 5;     % Price markup
 lambdaws = 6;     % Wage markup
 bs       = 7;     % Intertemporal preference
 
-NX = 7;
+NX       = 7;
 
 % -------------------------------------------------------------------------
 % INDEX for expectational errors
@@ -141,6 +141,7 @@ Rkexstar     = 11;
 i_s_ex_star  = 12;
 % === 
 
+% new parameters
 yex           = 13;
 lam_s_ex      = 14;
 lam_h_ex      = 15;
@@ -157,6 +158,7 @@ NETA = 7 + 5 + 6;
 % -------------------------------------------------------------------------
 
 % Calibrated parameters
+% -------------------------------------------------------------------------
 gss       = 0.22;  % capital depreciation rate
 delta     = 0.025; % steady state government spending to GDP ratio
 t_h_0_Lss = 0.0;   % New parameter! Might estimate.
@@ -209,19 +211,19 @@ gamma  = gamma100 / 100;
 expg   = exp(gamma);
 beta   = 100 / (Fbeta + 100);
 rss    = expg / beta - 1; % rss100, pss100 pop into constants
-rss100 = rss * 100; % REMOVED: pss    = pss100 / 100;
+rss100 = rss * 100;       % REMOVED: pss    = pss100 / 100 (pss never used)
 gss    = 1 / (1-gss);
 
 expLss = exp(Lss);
-Rkss   = (expg / beta - 1 + delta); % RHO
+Rkss   = (expg / beta - 1 + delta); 
 mcss   = 1 / (1 + lambdapss);
 wss    = (mcss * ((1 - alpha) ^ (1 - alpha)) / ... 
             ((alpha ^ (-alpha)) * Rkss ^ alpha)) ^ (1 / (1 - alpha));
 
 % Compute ratios wrt L_ss
-kLss   = (wss / Rkss) * alpha / (1 - alpha);
-FLss   = kLss ^ alpha - Rkss * kLss - wss;
-yLss   = kLss ^ alpha - FLss;
+kLss = (wss / Rkss) * alpha / (1 - alpha);
+FLss = kLss ^ alpha - Rkss * kLss - wss;
+yLss = kLss ^ alpha - FLss;
 
 i_s_Lss = (1 - (1-delta) * exp(-gamma)) * expg * kLss / (1-theta); %%%
 cLss    = yLss/gss - (1-theta) * i_s_Lss; %%%
@@ -233,10 +235,10 @@ lam_h_Lss = expg / (expg * c_h_Lss - h * cLss);
 lam_s_Lss = expg / (expg * c_s_Lss - h * cLss);
 
 % Multiply by L_ss again
-kss    = kLss * expLss;
-F      = FLss * expLss;
-yss    = yLss * expLss;
-css    = cLss * expLss;
+kss = kLss * expLss;
+F   = FLss * expLss;
+yss = yLss * expLss;
+css = cLss * expLss;
 
 % New equations
 c_h_ss = c_h_Lss * expLss;
@@ -245,6 +247,8 @@ i_s_ss = i_s_Lss * expLss;
 
 lam_h_ss = lam_h_Lss / expLss;
 lam_s_ss = lam_s_Lss / expLss;
+
+lam_ss   = theta * lam_h_ss + (1-theta) * lam_s_ss;
 
 % -------------------------------------------------------------------------
 % System Matrices [stars = flexible price equilibrium]
@@ -308,12 +312,12 @@ GAM0(Rstar, mcstar) = 1;
 % eq 9 and 10, consumption foc (c and cstar)
 % -------------------------------------------------------------------------
 GAM0(c, c)   = 1;
-GAM0(c, c_h) = -theta;
-GAM0(c, c_s) = -(1-theta);
+GAM0(c, c_h) = -theta     * (c_h_ss / css);
+GAM0(c, c_s) = -(1-theta) * (c_s_ss / css);
 
 GAM0(c_h, c_h) = 1;
-GAM0(c_h, w)   = -1;
-GAM0(c_h, L)   = -1;
+GAM0(c_h, w)   = -wss * expLss / c_h_ss;
+GAM0(c_h, L)   = -wss * expLss / c_h_ss;
 GAM0(c_h, t_h) = -yss / c_h_ss;
 %===
 GAM0(cstar, cstar)    = GAM0(c, c);
@@ -330,8 +334,8 @@ GAM0(c_h_star, t_h_star) = GAM0(c_h, t_h);
 % eq 11 and 12, Euler equation (lambda and lambdastar)
 % -------------------------------------------------------------------------
 GAM0(lambda, lambda) = 1;
-GAM0(lambda, lam_h)  = -theta;
-GAM0(lambda, lam_s)  = -(1-theta);
+GAM0(lambda, lam_h)  = -theta     * (lam_h_ss / lam_ss);
+GAM0(lambda, lam_s)  = -(1-theta) * (lam_s_ss / lam_ss);
 
 GAM0(lam_s, lam_s) =  1;
 GAM0(lam_s, b)     = -1;
@@ -582,15 +586,15 @@ GAM0(elam_s,  lam_s)  = 1; GAM1(elam_s,  elam_s)  = 1; PPI(elam_s,  lam_s_ex) = 
 GAM0(elam_h,  lam_h)  = 1; GAM1(elam_h,  elam_h)  = 1; PPI(elam_h,  lam_h_ex) = 1;
 
 % ===
-GAM0(ecstar,      cstar)      = 1; GAM1(ecstar,      ecstar)      = 1; PPI(ecstar,      cexstar)      = 1;
-GAM0(elambdastar, lambdastar) = 1; GAM1(elambdastar, elambdastar) = 1; PPI(elambdastar, lambdaexstar) = 1;
-GAM0(ephistar,    phistar)    = 1; GAM1(ephistar,    ephistar)    = 1; PPI(ephistar,    phiexstar)    = 1;
-GAM0(eRkstar,     Rkstar)     = 1; GAM1(eRkstar,     eRkstar)     = 1; PPI(eRkstar,     Rkexstar)     = 1;
-GAM0(e_i_s_star,  i_s_star)   = 1; GAM1(e_i_s_star,  e_i_s_star)  = 1; PPI(e_i_s_star,  i_s_ex_star)  = 1;
+GAM0(ecstar,      cstar)      = 1; GAM1(ecstar,      ecstar)      = 1; PPI(ecstar,      cexstar)       = 1;
+GAM0(elambdastar, lambdastar) = 1; GAM1(elambdastar, elambdastar) = 1; PPI(elambdastar, lambdaexstar)  = 1;
+GAM0(ephistar,    phistar)    = 1; GAM1(ephistar,    ephistar)    = 1; PPI(ephistar,    phiexstar)     = 1;
+GAM0(eRkstar,     Rkstar)     = 1; GAM1(eRkstar,     eRkstar)     = 1; PPI(eRkstar,     Rkexstar)      = 1;
+GAM0(e_i_s_star,  i_s_star)   = 1; GAM1(e_i_s_star,  e_i_s_star)  = 1; PPI(e_i_s_star,  i_s_ex_star)   = 1;
 % New parameters
-GAM0(ey_star,      y_star)     = 1; GAM1(ey_star,      ey_star)      = 1; PPI(ey_star,      yex_star)      = 1;
-GAM0(elam_s_star,  lam_s_star) = 1; GAM1(elam_s_star,  elam_s_star)  = 1; PPI(elam_s_star,  lam_s_ex_star) = 1;
-GAM0(elam_h_star,  lam_h_star) = 1; GAM1(elam_h_star,  elam_h_star)  = 1; PPI(elam_h_star,  lam_h_ex_star) = 1;
+GAM0(ey_star,     y_star)     = 1; GAM1(ey_star,     ey_star)     = 1; PPI(ey_star,     yex_star)      = 1;
+GAM0(elam_s_star, lam_s_star) = 1; GAM1(elam_s_star, elam_s_star) = 1; PPI(elam_s_star, lam_s_ex_star) = 1;
+GAM0(elam_h_star, lam_h_star) = 1; GAM1(elam_h_star, elam_h_star) = 1; PPI(elam_h_star, lam_h_ex_star) = 1;
 % ===
 
 % eq 53 - 56, lagged variables
