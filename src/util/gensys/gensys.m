@@ -1,4 +1,4 @@
-function [G1,C,impact,fmat,fwt,ywt,gev,eu] = GENSYS(g0,g1,c,psi,pi,div)
+function [G1,C,impact,fmat,fwt,ywt,gev,eu] = gensys(g0,g1,c,psi,pi,div)
 %function [G1,C,impact,fmat,fwt,ywt,gev,eu]=gensys(g0,g1,c,psi,pi,div)
 %System given as
 %        g0*y(t)=g1*y(t-1)+c+psi*z(t)+pi*eta(t),

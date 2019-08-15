@@ -487,7 +487,7 @@ GAM0(w_1,w_1)=1; GAM1(w_1,w)=1;
 
 % Solution of the RE system of equations using Chris Sims' Gensys
 % -------------------------------------------------------------------------
-[G1,C,impact,fmat,fwt,ywt,gev,eu]=GENSYS(GAM0,GAM1,C,PSI,PPI) ;
+[G1,C,impact,fmat,fwt,ywt,gev,eu]=gensys(GAM0,GAM1,C,PSI,PPI) ;
 
 
 % Matrix that maps endogenous variables to observables
