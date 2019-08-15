@@ -32,21 +32,22 @@ for i=1:n
 %----------------------------------------
    nunstab=nunstab+(abs(b(i,i))>div*abs(a(i,i)));
    if abs(a(i,i))<realsmall & abs(b(i,i))<realsmall
+      i
       zxz=1;
-      g0
-      g1
-      psi
-      pi
+      g0;
+      g1;
+      psi;
+      pi;
    end
 end
-div ;
+div;
 nunstab;
 if ~zxz
    [a b q z]=qzdiv(div,a,b,q,z);
 end
 gev=[diag(a) diag(b)];
 if zxz
-   %disp('Coincident zeros.  Indeterminacy and/or nonexistence.')
+   disp('Coincident zeros.  Indeterminacy and/or nonexistence.')
    eu=[-2;-2];
    return
 end
