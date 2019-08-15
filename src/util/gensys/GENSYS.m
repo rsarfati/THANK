@@ -1,4 +1,4 @@
-function [G1,C,impact,fmat,fwt,ywt,gev,eu]=GENSYS(g0,g1,c,psi,pi,div)
+function [G1,C,impact,fmat,fwt,ywt,gev,eu] = GENSYS(g0,g1,c,psi,pi,div)
 %function [G1,C,impact,fmat,fwt,ywt,gev,eu]=gensys(g0,g1,c,psi,pi,div)
 %System given as
 %        g0*y(t)=g1*y(t-1)+c+psi*z(t)+pi*eta(t),
@@ -104,7 +104,7 @@ bigev=find(diag(deta1(1:md,1:md))>realsmall);
 ueta1=ueta1(:,bigev);
 veta1=veta1(:,bigev);
 deta1=deta1(bigev,bigev);
-if existx | nunstab==0
+if existx || nunstab==0
    %disp('solution exists');
    eu(1)=1;
 else
