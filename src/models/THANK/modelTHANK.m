@@ -197,7 +197,7 @@ SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
 % New parameters
 theta       = param(36);
 sigma       = param(37);
-sigma_prime = param(38);
+sigma_prime = 0; %param(38);
 tau_D       = param(39); % Where all the cases come in
 tau_k       = param(40);
 
