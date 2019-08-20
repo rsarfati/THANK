@@ -375,7 +375,7 @@ GAM1(lam_h_star, cstar)      = GAM1(lam_h, c);
 
 GAM0(lam_s_star, Rstar)       = GAM0(lam_s, R);
 GAM0(lam_s_star, z)           = GAM0(lam_s, z);
-GAM0(lam_s_star, ep)          = GAM0(lam_s, ep);     % CHECK "epstar"
+%GAM0(lam_s_star, ep)          = GAM0(lam_s, ep);     % CHECK "epstar"
 GAM0(lam_s_star, elam_s_star) = GAM0(lam_s, elam_s);
 GAM0(lam_s_star, elam_h_star) = GAM0(lam_s, elam_h);
 GAM0(lam_s_star, eystar)      = GAM0(lam_s, ey);     
@@ -499,8 +499,8 @@ GAM0(wstar, wgapstar) = 1;
 % -------------------------------------------------------------------------
 GAM0(wgap, wgap)   = 1;
 GAM0(wgap, w)      = -1;
-GAM0(wgap, b)      = 1 / ((1 - rhob) * (sigma*lam_s_ss + (1-sigma)*lam_h_ss) * ...
-                           (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) / ...
+GAM0(wgap, b)      = 1 / ((1 - rhob) * (sigma * lam_s_ss + (1-sigma) * lam_h_ss) *  ...
+                           (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) /          ...
                            (h*css * (sigma * lam_s_ss * (expg * c_h_ss - h * css) + ...
                            (1-sigma) * lam_h_ss * (expg * c_s_ss - h * css))));
 GAM0(wgap, L)      = niu;
