@@ -40,7 +40,7 @@ sdb            = bound0( param(35));
 
 theta          = bound0B(param(36),.99);
 sigma          = bound0B(param(37),.99);
-sigma_prime    = bound01(param(38));     
+sigma_prime    =         param(38);     
 tau_D          = bound0B(param(39),.99);
 tau_k          = bound0B(param(40),.99);
 

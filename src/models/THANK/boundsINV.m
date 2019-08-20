@@ -38,7 +38,7 @@ sdb            = bound0INV( param(35));
 
 theta          = bound0BINV(param(36),.99);
 sigma          = bound0BINV(param(37),.99);
-sigma_prime    = bound01INV(param(38));     
+sigma_prime    =            param(38);     
 tau_D          = bound0BINV(param(39),.99);
 tau_k          = bound0BINV(param(40),.99);
 

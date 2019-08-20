@@ -3,18 +3,18 @@ function logpriorTHANK = logpriorTHANK(param)
 loprior = zeros(length(param));
 
 prior(1)  = log(normpdf(param(1),0.30,0.05));       % alpha
-prior(2)  = logBetapdf( param(2),0.5,0.15);          % iotap
-prior(3)  = logBetapdf( param(3),0.5,0.15);          % iotaw
+prior(2)  = logBetapdf( param(2),0.5,0.15);         % iotap
+prior(3)  = logBetapdf( param(3),0.5,0.15);         % iotaw
 prior(4)  = log(normpdf(param(4),0.5,0.025));       % gamma100
-prior(5)  = logBetapdf( param(5),0.5,0.1);           % h
+prior(5)  = logBetapdf( param(5),0.5,0.1);          % h
 prior(6)  = log(normpdf(param(6),0.15,0.05));       % lambdapss
 prior(7)  = log(normpdf(param(7),0.15,0.05));       % lambdawss
 prior(8)  = log(normpdf(param(8),0,0.5));           % Lss
 prior(9)  = log(normpdf(param(9),0.5,0.1));         % pss
 prior(10) = logGammapdf(param(10),0.25,0.1);        % Fbeta
 prior(11) = logGammapdf(param(11),2,0.75);          % niu
-prior(12) = logBetapdf( param(12),0.66,0.1);         % xip
-prior(13) = logBetapdf( param(13),0.66,0.1);         % xiw
+prior(12) = logBetapdf( param(12),0.66,0.1);        % xip
+prior(13) = logBetapdf( param(13),0.66,0.1);        % xiw
 prior(14) = logGammapdf(param(14),5,1);             % chi 
 prior(15) = logGammapdf(param(15),4,1);             % S
 prior(16) = log(normpdf(param(16),1.7,0.3));        % fp
@@ -40,8 +40,8 @@ prior(33) = logIG1pdf(param(33),0.1,1);             % sdlambdap
 prior(34) = logIG1pdf(param(34),0.1,1);             % sdlambdaw
 prior(35) = logIG1pdf(param(35),0.1,1);             % sdb
 
-prior(36) = logBetapdf( param(36),0.4,0.2);          % theta
-prior(37) = logBetapdf( param(37),0.9,0.06);         % sigma
+prior(36) = logBetapdf( param(36),0.4,0.2);         % theta
+prior(37) = logBetapdf( param(37),0.9,0.06);        % sigma
 prior(38) = log(normpdf(param(38),0.0,2));          % sigma_prime
 
 % Corresponds to Case 1d
