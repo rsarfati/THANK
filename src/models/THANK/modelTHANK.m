@@ -338,13 +338,19 @@ GAM0(lambda, lam_h)  = -theta     * (lam_h_ss / lam_ss);
 GAM0(lambda, lam_s)  = -(1-theta) * (lam_s_ss / lam_ss);
 
 GAM0(lam_s, lam_s) =  1;
-GAM0(lam_s, b)     = -1;
+GAM0(lam_s, b)     = -1 / ((1 - rhob) * (sigma * lam_s_ss + (1-sigma) * lam_h_ss) * ...
+                           (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) /          ...
+                           (h*css * (sigma * lam_s_ss * (expg * c_h_ss - h * css) + ...
+                           (1-sigma) * lam_h_ss * (expg * c_s_ss - h * css))));
 GAM0(lam_s, z)     = h * css / (expg * c_s_ss - h * css);
 GAM0(lam_s, c_s)   = expg * c_s_ss / (expg * c_s_ss - h * css);
 GAM1(lam_s, c)     = h * css / (expg * c_s_ss - h * css);
 
 GAM0(lam_h, lam_h) =  1;
-GAM0(lam_h, b)     = -1;
+GAM0(lam_h, b)     = -1 / ((1 - rhob) * (sigma * lam_s_ss + (1-sigma) * lam_h_ss) * ...
+                           (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) /          ...
+                           (h*css * (sigma * lam_s_ss * (expg * c_h_ss - h * css) + ...
+                           (1-sigma) * lam_h_ss * (expg * c_s_ss - h * css))));
 GAM0(lam_h, z)     = h * css / (expg * c_h_ss - h * css);
 GAM0(lam_h, c_h)   = expg * c_h_ss / (expg * c_h_ss - h * css);
 GAM1(lam_h, c)     = h * css / (expg * c_h_ss - h * css);
