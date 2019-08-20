@@ -196,14 +196,14 @@ SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
 
 % New parameters
 theta       = param(36);
-sigma       = param(37);
+sigma       = 1;%param(37);
 sigma_prime = 0; %param(38);
 tau_D       = param(39); % Where all the cases come in
 tau_k       = param(40);
 
 numpar = 35 + 5;  % Number of parameters
 ncof   = 28 + 5;  % Number of coefficients not corresponding to standard deviations
-
+param
 % -------------------------------------------------------------------------
 % Computation of the steady state
 % -------------------------------------------------------------------------
