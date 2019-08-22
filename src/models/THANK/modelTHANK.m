@@ -355,6 +355,7 @@ GAM0(lam_h, z)     = h * css / (expg * c_h_ss - h * css);
 GAM0(lam_h, c_h)   = expg * c_h_ss / (expg * c_h_ss - h * css);
 GAM1(lam_h, c)     = h * css / (expg * c_h_ss - h * css);
 
+GAM0(c_s, lam_s)  =  1; %%% lam_s already used in equation
 GAM0(c_s, R)      = -1;
 GAM0(c_s, z)      = rhoz;
 GAM0(c_s, ep)     = 1;
@@ -362,6 +363,7 @@ GAM0(c_s, elam_s) = -(sigma*lam_s_ss)     / (sigma*lam_s_ss + (1-sigma)*lam_h_ss
 GAM0(c_s, elam_h) = -((1-sigma)*lam_h_ss) / (sigma*lam_s_ss + (1-sigma)*lam_h_ss);
 GAM0(c_s, ey)     = -(sigma_prime)*sigma*(lam_s_ss - lam_h_ss) / ... 
                         (sigma*lam_s_ss + (1-sigma)*lam_h_ss); 
+                    
 % ===
 GAM0(lambdastar, lambdastar) = GAM0(lambda, lambda);
 GAM0(lambdastar, lam_h_star) = GAM0(lambda, lam_h);
@@ -379,9 +381,9 @@ GAM0(lam_h_star, z)          = GAM0(lam_h, z);
 GAM0(lam_h_star, c_h_star)   = GAM0(lam_h, c_h);
 GAM1(lam_h_star, cstar)      = GAM1(lam_h, c);
 
+GAM0(c_s_star, lam_s_star)  = GAM0(c_s, lam_s); %%% lam_s already assigned an equation
 GAM0(c_s_star, Rstar)       = GAM0(c_s, R);
 GAM0(c_s_star, z)           = GAM0(c_s, z);
-%GAM0(c_s_star, ep)          = GAM0(c_s, ep);     % CHECK "epstar"
 GAM0(c_s_star, elam_s_star) = GAM0(c_s, elam_s);
 GAM0(c_s_star, elam_h_star) = GAM0(c_s, elam_h);
 GAM0(c_s_star, eystar)      = GAM0(c_s, ey);     
@@ -586,6 +588,7 @@ GAM0(ephi,    phi)    = 1; GAM1(ephi,    ephi)    = 1; PPI(ephi,    phiex)    = 
 GAM0(eRk,     Rk)     = 1; GAM1(eRk,     eRk)     = 1; PPI(eRk,     Rkex)     = 1;
 GAM0(e_i_s,   i_s)    = 1; GAM1(e_i_s,   e_i_s)   = 1; PPI(e_i_s,   i_s_ex)   = 1;
 GAM0(ew,      w)      = 1; GAM1(ew,      ew)      = 1; PPI(ew,      wex)      = 1;
+
 % New parameters
 GAM0(ey,      y)      = 1; GAM1(ey,      ey)      = 1; PPI(ey,      yex)      = 1;
 GAM0(elam_s,  lam_s)  = 1; GAM1(elam_s,  elam_s)  = 1; PPI(elam_s,  lam_s_ex) = 1;
@@ -597,6 +600,7 @@ GAM0(elambdastar, lambdastar) = 1; GAM1(elambdastar, elambdastar) = 1; PPI(elamb
 GAM0(ephistar,    phistar)    = 1; GAM1(ephistar,    ephistar)    = 1; PPI(ephistar,    phiexstar)     = 1;
 GAM0(eRkstar,     Rkstar)     = 1; GAM1(eRkstar,     eRkstar)     = 1; PPI(eRkstar,     Rkexstar)      = 1;
 GAM0(e_i_s_star,  i_s_star)   = 1; GAM1(e_i_s_star,  e_i_s_star)  = 1; PPI(e_i_s_star,  i_s_ex_star)   = 1;
+
 % New parameters
 GAM0(eystar,      ystar)      = 1; GAM1(eystar,      eystar)      = 1; PPI(eystar,      yex_star)      = 1;
 GAM0(elam_s_star, lam_s_star) = 1; GAM1(elam_s_star, elam_s_star) = 1; PPI(elam_s_star, lam_s_ex_star) = 1;

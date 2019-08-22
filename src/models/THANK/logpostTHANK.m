@@ -1,9 +1,9 @@
 function logpost = logpostTHANK(param,T,y)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Date: December 22, 2009
+% Date: August 2019
 % this function computes the value of the posterior density for the model
-% in Justiniano, Primiceri and Tambalotti (2010)
+% in Bilbiie, Primiceri, and Tambalotti (2019)
 % To be used in the minimization algorithm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
