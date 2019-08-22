@@ -262,8 +262,8 @@ C    = zeros(NY, 1);
 % eq 1 and 2, production function (y, ystar)
 % -------------------------------------------------------------------------
 GAM0(y, y) = 1;
-GAM0(y, k) = -((yss + F) / yss) * alpha;     % (1 - lambda_p) ?
-GAM0(y, L) = -((yss + F) / yss) * (1-alpha); % (1 - lambda_p) ?
+GAM0(y, k) = -(1 + lambdapss) * alpha; 
+GAM0(y, L) = -(1 + lambdapss) * (1 - alpha);
 % ===
 GAM0(ystar, ystar) = GAM0(y, y);
 GAM0(ystar, kstar) = GAM0(y, k);
@@ -301,7 +301,9 @@ GAM0(mcstar, wstar)  = GAM0(mc, w);
 % -------------------------------------------------------------------------
 GAM0(p, p)       = 1;
 GAM0(p, ep)      = -beta / (1 + iotap*beta);
+
 GAM1(p, p)       = iotap / (1 + iotap*beta);
+
 GAM0(p, mc)      = -((1 - beta*xip) * (1 - xip) / ((1 + iotap * beta) * xip)); % kappa_p
 GAM0(p, lambdap) = -1; % normalized
 %===
@@ -342,6 +344,7 @@ GAM0(lam_s, b)     = -1 / ((1 - rhob) * (sigma * lam_s_ss + (1-sigma) * lam_h_ss
                            (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) /          ...
                            (h*css * (sigma * lam_s_ss * (expg * c_h_ss - h * css) + ...
                            (1-sigma) * lam_h_ss * (expg * c_s_ss - h * css))));
+
 GAM0(lam_s, z)     = h * css / (expg * c_s_ss - h * css);
 GAM0(lam_s, c_s)   = expg * c_s_ss / (expg * c_s_ss - h * css);
 GAM1(lam_s, c)     = h * css / (expg * c_s_ss - h * css);
