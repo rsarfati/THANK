@@ -212,7 +212,7 @@ expg   = exp(gamma);
 beta   = 100 / (Fbeta + 100);
 rss    = expg / beta - 1; % rss100, pss100 pop into constants
 rss100 = rss * 100;       % REMOVED: pss    = pss100 / 100 (pss never used)
-gss    = 1 / (1-gss);
+gss    = 1;%1 / (1-gss);
 
 expLss = exp(Lss);
 Rkss   = (expg / beta - 1 + delta); 

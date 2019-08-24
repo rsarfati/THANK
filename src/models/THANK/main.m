@@ -11,10 +11,42 @@ y = DataTHANK;
 T = length(y);
 
 % initial guess for maximization algorithm
-guess = [0.25 0.21 0.15 0.53 0.85 0.25 0.12 0.50 0.75 0.10 4.00 0.85 0.75 5.00 ... 
-         2.50 4.00 0.10 0.25 0.80 0.25 0.98 0.70 0.95 0.98 0.70 0.15 0.75 0.95 ... 
-         0.20 0.90 0.35 5.00 0.15 0.20 0.05 ...
-         0.1 0.96 0.00 0.33 0.33]; % New parameters
+guess = [0.17 ... alpha
+         0.05 ... iotap
+         0.08 ... iotaw
+         0.53 ... gamma100 ???
+         0.84 ... h
+         0.25 ... lambdapss ???
+         0.12 ... lambdawss ???
+         0.50 ... Lss ???
+         0.75 ... pss
+         0.10 ... Fbeta
+         1.96 ... niu
+         0.77 ... xip
+         0.73 ... xiw
+         4.95 ... chi
+         2.50 ... S
+         4.00 ... fp
+         0.10 ... fy
+         0.25 ... fdy
+         0.78 ... rhoR
+         0.25 ... rhoZ
+         0.98 ... rhog
+         0.70 ... rhomiu
+         0.95 ... rholambdap
+         0.98 ... rholambdaw
+         0.70 ... rhob
+         0.15 ... rhomp
+         0.75 ... rhoARMAlambdap
+         0.95 ... rhoARMAlambdaw
+         0.20 ... sdR
+         0.90 ... sdz
+         0.35 ... sdg
+         5.00 ... sdmiu
+         0.15 ... sdlambdap
+         0.20 ... sdlambdaw
+         0.05 ... sdb
+         0.30 1.00 0.00 0.00 0.00]; % New parameters
        %theta sigm sigp tauD tauk
          
 x0 = boundsINV(guess);
