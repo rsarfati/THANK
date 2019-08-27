@@ -14,11 +14,11 @@ T = length(y);
 guess = [0.17 ... alpha
          0.05 ... iotap
          0.08 ... iotaw
-         0.53 ... gamma100 ???
+         0.53 ... gamma100 
          0.84 ... h
-         0.25 ... lambdapss ???
-         0.12 ... lambdawss ???
-         0.50 ... Lss ???
+         0.25 ... lambdapss
+         0.12 ... lambdawss
+         0.50 ... Lss
          0.75 ... pss
          0.10 ... Fbeta
          1.96 ... niu
