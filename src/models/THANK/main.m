@@ -46,9 +46,12 @@ guess = [0.17 ... alpha
          0.15 ... sdlambdap
          0.20 ... sdlambdaw
          0.05 ... sdb
-         0.30 1.00 0.00 0.00 0.00]; % New parameters
-       %theta sigm sigp tauD tauk
-         
+         0.30 ... theta %%% New parameters below
+         1.00 ... sigm
+         0.00 ... sigp
+         0.00 ... tauD
+         0.00]; % tauk
+       
 x0 = boundsINV(guess);
 
 % posterior maximization
