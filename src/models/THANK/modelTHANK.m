@@ -159,7 +159,7 @@ NETA = 7 + 5 + 6;
 
 % Calibrated parameters
 % -------------------------------------------------------------------------
-gss       = 0.22;  % capital depreciation rate
+gyss      = 0.22;  % capital depreciation rate
 delta     = 0.025; % steady state government spending to GDP ratio
 t_h_0_Lss = 0.0;   % New parameter! Might estimate.
 
@@ -212,7 +212,6 @@ expg   = exp(gamma);
 beta   = 100 / (Fbeta + 100);
 rss    = expg / beta - 1; % rss100, pss100 pop into constants
 rss100 = rss * 100;       % REMOVED: pss    = pss100 / 100 (pss never used)
-gss    = 1;%1 / (1-gss);
 
 expLss = exp(Lss);
 Rkss   = (expg / beta - 1 + delta); 
@@ -224,11 +223,12 @@ wss    = (mcss * ((1 - alpha) ^ (1 - alpha)) / ...
 kLss = (wss / Rkss) * alpha / (1 - alpha);
 FLss = kLss ^ alpha - Rkss * kLss - wss;
 yLss = kLss ^ alpha - FLss;
+gLss = gyss*yLss;
 
 i_s_Lss = (1 - (1-delta) * exp(-gamma)) * expg * kLss / (1-theta); %%%
-cLss    = yLss/gss - (1-theta) * i_s_Lss; %%%
+cLss    = yLss - (1-theta) * i_s_Lss - gLss; %%%
 
-c_h_Lss = wss + t_h_0_Lss + tau_k * Rkss * kLss; %%%
+c_h_Lss = wss + t_h_0_Lss + tau_k * Rkss * kLss - gLss; %%%
 c_s_Lss = (1 / (1 - theta)) * cLss - (theta / (1 - theta)) * c_h_Lss; %%%
 
 lam_h_Lss = expg / (expg * c_h_Lss - h * cLss);
@@ -319,6 +319,7 @@ GAM0(c, c_s) = -(1-theta) * (c_s_ss / css);
 
 GAM0(c_h, c_h) = 1;
 GAM0(c_h, w)   = -wss * expLss / c_h_ss;
+GAM0(c_h, g)   = gLss / c_h_Lss;
 GAM0(c_h, L)   = -wss * expLss / c_h_ss;
 GAM0(c_h, t_h) = -yss / c_h_ss;
 %===
@@ -328,6 +329,7 @@ GAM0(cstar, c_s_star) = GAM0(c, c_s);
 
 GAM0(c_h_star, c_h_star) = GAM0(c_h, c_h);
 GAM0(c_h_star, wstar)    = GAM0(c_h, w);
+GAM0(c_h_star, g)        = GAM0(c_h, g);
 GAM0(c_h_star, Lstar)    = GAM0(c_h, L);
 GAM0(c_h_star, t_h_star) = GAM0(c_h, t_h);
 %===
@@ -553,8 +555,8 @@ GAM0(gdpstar, ustar)   = GAM0(gdp, u);
 % -------------------------------------------------------------------------
 GAM0(u, c)   = css / yss;
 GAM0(u, i_s) = (1 - theta) * i_s_ss / yss;
-GAM0(u, y)   = -1 / gss;
-GAM0(u, g)   =  1 / gss;
+GAM0(u, y)   = -1;
+GAM0(u, g)   = gyss;
 GAM0(u, u)   = kss * Rkss / yss;
 % ===
 GAM0(ustar, cstar)    = GAM0(u, c);

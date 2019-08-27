@@ -1,4 +1,4 @@
-function logpriorTHANK = logpriorTHANK_MCMC (param);
+function logpriorTHANK = logpriorTHANK_MCMC (param)
 
 loprior = zeros(length(param));
 

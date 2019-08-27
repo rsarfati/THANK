@@ -51,7 +51,7 @@ guess = [0.17 ... alpha
          0.00 ... sigp
          0.00 ... tauD
          0.00]; % tauk
-       
+
 x0 = boundsINV(guess);
 
 % posterior maximization
