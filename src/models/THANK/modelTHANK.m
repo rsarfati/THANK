@@ -43,7 +43,7 @@ b           = 22; % intertemporal preference shock
 mp          = 23; % monetary policy shock
 
 % Expectational Variables
-ep          = 24; 
+ep          = 24;
 ec          = 25;
 elambda     = 26;
 ephi        = 27;
@@ -51,12 +51,12 @@ eRk         = 28;
 e_i_s       = 29;
 ew          = 30;
 
-% Lagged Variables 
-gdp_1       = 31; 
+% Lagged Variables
+gdp_1       = 31;
 c_1         = 32;
 i_s_1       = 33;
 w_1         = 34;
-ARMAlambdap = 35; % auxiliary variables for parameterization of 
+ARMAlambdap = 35; % auxiliary variables for parameterization of
 ARMAlambdaw = 36; % ... ARMA processes for markup shocks
 
 % New variables:
@@ -76,7 +76,7 @@ var_len     = 44;
 % variables for the flex prices and wages version of the model
 % -------------------------------------------------------------------------
 ystar       = var_len + 1;
-kstar       = var_len + 2; 
+kstar       = var_len + 2;
 Lstar       = var_len + 3;
 Rkstar      = var_len + 4;
 wstar       = var_len + 5;
@@ -139,7 +139,7 @@ lambdaexstar = 9;
 phiexstar    = 10;
 Rkexstar     = 11;
 i_s_ex_star  = 12;
-% === 
+% ===
 
 % new parameters
 yex           = 13;
@@ -184,12 +184,12 @@ fp        = param(16); % reaction to inflation
 fy        = param(17); % reaction to output gap
 fdy       = param(18); % reaction to output gap growth
 
-rhoR = param(19); rhoz = param(20); rhog = param(21); rhomiu = param(22); 
+rhoR = param(19); rhoz = param(20); rhog = param(21); rhomiu = param(22);
 rholambdap = param(23); rholambdaw = param(24); rhob = param(25); rhomp = param(26);
 rhoARMAlambdap = param(27); rhoARMAlambdaw = param(28);
 
 % Standard deviations
-sdR = param(29); sdz = param(30); sdg = param(31); sdmiu = param(32); 
+sdR = param(29); sdz = param(30); sdg = param(31); sdmiu = param(32);
 sdlambdap = param(33); sdlambdaw = param(34); sdb = param(35);
 
 SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
@@ -214,9 +214,9 @@ rss    = expg / beta - 1; % rss100, pss100 pop into constants
 rss100 = rss * 100;       % REMOVED: pss    = pss100 / 100 (pss never used)
 
 expLss = exp(Lss);
-Rkss   = (expg / beta - 1 + delta); 
+Rkss   = (expg / beta - 1 + delta);
 mcss   = 1 / (1 + lambdapss);
-wss    = (mcss * ((1 - alpha) ^ (1 - alpha)) / ... 
+wss    = (mcss * ((1 - alpha) ^ (1 - alpha)) / ...
             ((alpha ^ (-alpha)) * Rkss ^ alpha)) ^ (1 / (1 - alpha));
 
 % Compute ratios wrt L_ss
@@ -228,7 +228,7 @@ gLss = gyss*yLss;
 i_s_Lss = (1 - (1-delta) * exp(-gamma)) * expg * kLss / (1-theta); %%%
 cLss    = yLss - (1-theta) * i_s_Lss - gLss; %%%
 
-c_h_Lss = wss + t_h_0_Lss + tau_k * Rkss * kLss - gLss; %%%
+c_h_Lss = wss + t_h_0_Lss + (tau_k/theta) * Rkss * kLss - gLss; %%%
 c_s_Lss = (1 / (1 - theta)) * cLss - (theta / (1 - theta)) * c_h_Lss; %%%
 
 lam_h_Lss = expg / (expg * c_h_Lss - h * cLss);
@@ -262,7 +262,7 @@ C    = zeros(NY, 1);
 % eq 1 and 2, production function (y, ystar)
 % -------------------------------------------------------------------------
 GAM0(y, y) = 1;
-GAM0(y, k) = -(1 + lambdapss) * alpha; 
+GAM0(y, k) = -(1 + lambdapss) * alpha;
 GAM0(y, L) = -(1 + lambdapss) * (1 - alpha);
 % ===
 GAM0(ystar, ystar) = GAM0(y, y);
@@ -366,9 +366,9 @@ GAM0(c_s, z)      = rhoz;
 GAM0(c_s, ep)     = 1;
 GAM0(c_s, elam_s) = -(sigma*lam_s_ss)     / (sigma*lam_s_ss + (1-sigma)*lam_h_ss);
 GAM0(c_s, elam_h) = -((1-sigma)*lam_h_ss) / (sigma*lam_s_ss + (1-sigma)*lam_h_ss);
-GAM0(c_s, ey)     = -(sigma_prime)*sigma*(lam_s_ss - lam_h_ss) / ... 
-                        (sigma*lam_s_ss + (1-sigma)*lam_h_ss); 
-                    
+GAM0(c_s, ey)     = -(sigma_prime)*sigma*(lam_s_ss - lam_h_ss) / ...
+                        (sigma*lam_s_ss + (1-sigma)*lam_h_ss);
+
 % ===
 GAM0(lambdastar, lambdastar) = GAM0(lambda, lambda);
 GAM0(lambdastar, lam_h_star) = GAM0(lambda, lam_h);
@@ -391,7 +391,7 @@ GAM0(c_s_star, Rstar)       = GAM0(c_s, R);
 GAM0(c_s_star, z)           = GAM0(c_s, z);
 GAM0(c_s_star, elam_s_star) = GAM0(c_s, elam_s);
 GAM0(c_s_star, elam_h_star) = GAM0(c_s, elam_h);
-GAM0(c_s_star, eystar)      = GAM0(c_s, ey);     
+GAM0(c_s_star, eystar)      = GAM0(c_s, ey);
 % ===
 
 
@@ -575,11 +575,11 @@ GAM0(miu, miu) = 1; GAM1(miu, miu) = rhomiu; PSI(miu, mius) = 1;
 GAM0(b,   b)   = 1; GAM1(b,   b)   = rhob;   PSI(b,   bs)   = 1;
 GAM0(mp,  mp)  = 1; GAM1(mp,  mp)  = rhomp;  PSI(mp,  Rs)   = 1;
 
-GAM0(lambdaw,         lambdaw) =  1; GAM1(lambdaw, lambdaw)     = rholambdaw; 
+GAM0(lambdaw,         lambdaw) =  1; GAM1(lambdaw, lambdaw)     = rholambdaw;
 GAM0(lambdaw,     ARMAlambdaw) = -1; GAM1(lambdaw, ARMAlambdaw) = -rhoARMAlambdaw;
 GAM0(ARMAlambdaw, ARMAlambdaw) =  1; PSI(ARMAlambdaw, lambdaws) = 1;
 
-GAM0(lambdap,         lambdap) =  1; GAM1(lambdap,    lambdap)  = rholambdap; 
+GAM0(lambdap,         lambdap) =  1; GAM1(lambdap,    lambdap)  = rholambdap;
 GAM0(lambdap,     ARMAlambdap) = -1; GAM1(lambdap, ARMAlambdap) = -rhoARMAlambdap;
 GAM0(ARMAlambdap, ARMAlambdap) =  1; PSI(ARMAlambdap, lambdaps) = 1;
 
