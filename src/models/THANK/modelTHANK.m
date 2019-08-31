@@ -226,7 +226,7 @@ yLss = kLss ^ alpha - FLss;
 gLss = gyss*yLss;
 
 i_s_Lss = (1 - (1-delta) * exp(-gamma)) * expg * kLss / (1-theta); %%%
-cLss    = (yLss / gss) - (1-theta) * i_s_Lss - gLss; %%%
+cLss    = yLss - (1-theta) * i_s_Lss - gLss; %%%
 
 c_h_Lss = wss + t_h_0_Lss + (tau_k/theta) * Rkss * kLss - gLss; %%%
 c_s_Lss = (1 / (1 - theta)) * cLss - (theta / (1 - theta)) * c_h_Lss; %%%
