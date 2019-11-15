@@ -123,7 +123,7 @@ NETA=7+5;
 % calibrated parameters
 gss=0.22;           % capital depreciation rate
 delta=0.025;        % steady state government spending to GDP ratio
-
+%eta = 0.18;
 
 % Non SD parameters
 % -------------------------------------------------------------------------
@@ -148,13 +148,16 @@ fdy=param(18);      % reaction to output gap growth
 rhoR=param(19); rhoz=param(20); rhog=param(21); rhomiu=param(22); rholambdap=param(23); rholambdaw=param(24); rhob=param(25); rhomp=param(26);
 rhoARMAlambdap=param(27); rhoARMAlambdaw=param(28);
 
+eta=0.018;%param(36);
+%rhoz=0.0;
+
 % Standard deviations
 % -------------------------------------------------------------------------
 sdR=param(29); sdz=param(30); sdg=param(31); sdmiu=param(32); sdlambdap=param(33); sdlambdaw=param(34); sdb=param(35);
 SDX=diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
 
-numpar=      35;  % Number of parameters
-ncof=        28;  % Number of coefficients not corresponding to
+numpar=      36;  % Number of parameters
+ncof=        29;  % Number of coefficients not corresponding to
                   % standard deviations
 
 
@@ -444,7 +447,7 @@ GAM0(ustar,ustar)=kss*Rkss/yss;
 
 % eq 32 - 40, exogenous shocks
 % -------------------------------------------------------------------------
-GAM0(z,z)=1; GAM1(z,z)=rhoz; PSI(z,zs)=1;
+GAM0(z,z)=1; GAM1(z,z)=rhoz; PSI(z,zs)=1; GAM1(z,y)=eta; GAM1(z,ystar)=-eta;
 GAM0(g,g)=1; GAM1(g,g)=rhog; PSI(g,gs)=1;
 
 GAM0(lambdaw,lambdaw)=1; GAM1(lambdaw,lambdaw)=rholambdaw; GAM0(lambdaw,ARMAlambdaw)=-1; GAM1(lambdaw,ARMAlambdaw)=-rhoARMAlambdaw;

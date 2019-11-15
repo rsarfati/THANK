@@ -37,6 +37,8 @@ J(33)=bound0prime(param(33));
 J(34)=bound0prime(param(34)); 
 J(35)=bound0prime(param(35));
 
+J(36)=1;
+
 J=diag(J);
 
 function y = bound01prime(x);

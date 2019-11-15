@@ -37,10 +37,11 @@ sdlambdap=bound0INV(param(33));
 sdlambdaw=bound0INV(param(34)); 
 sdb=bound0INV(param(35));
 
+eta=param(36);
 
 theta = [alpha iotap iotaw gamma100 h lambdapss lambdawss Lss pss100 Fbeta...
     niu xip xiw chi S fp fy fdy rhoR rhoz rhog rhomiu rholambdap rholambdaw...
-    rhob rhomp rhoARMAlambdap rhoARMAlambdaw sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb];
+    rhob rhomp rhoARMAlambdap rhoARMAlambdaw sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb eta];
 
 
 
