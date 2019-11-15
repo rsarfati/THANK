@@ -159,7 +159,7 @@ NETA = 7 + 5 + 6;
 
 % Calibrated parameters
 % -------------------------------------------------------------------------
-g_Y_ss    = 0.22;  % capital depreciation rate
+gyss       = 0.2;  % capital depreciation rate
 delta     = 0.025; % steady state government spending to GDP ratio
 t_h_0_Lss = 0.0;   % New parameter! Might estimate.
 
@@ -197,9 +197,9 @@ SDX = diag([sdR sdz sdg sdmiu sdlambdap sdlambdaw sdb]);
 % New parameters
 theta       = param(36);
 sigma       = param(37);
-sigma_prime = param(38);
+sigma_prime = 0;%param(38);
 tau_D       = param(39); % Where all the cases come in
-tau_k       = param(40);
+tau_k       = 0;%tau_D;%param(40);
 
 numpar = 35 + 5;  % Number of parameters
 ncof   = 28 + 5;  % Number of coefficients not corresponding to standard deviations
@@ -212,7 +212,6 @@ expg   = exp(gamma);
 beta   = 100 / (Fbeta + 100);
 rss    = expg / beta - 1; % rss100, pss100 pop into constants
 rss100 = rss * 100;       % REMOVED: pss    = pss100 / 100 (pss never used)
-gss    = 1 / (1 - g_Y_ss);
 
 expLss = exp(Lss);
 Rkss   = (expg / beta - 1 + delta); 
@@ -224,11 +223,14 @@ wss    = (mcss * ((1 - alpha) ^ (1 - alpha)) / ...
 kLss = (wss / Rkss) * alpha / (1 - alpha);
 FLss = kLss ^ alpha - Rkss * kLss - wss;
 yLss = kLss ^ alpha - FLss;
+gLss   = gyss*yLss;
 
 i_s_Lss = (1 - (1-delta) * exp(-gamma)) * expg * kLss / (1-theta); %%%
-cLss    = yLss/gss - (1-theta) * i_s_Lss; %%%
+% cLss    = yLss/gss - (1-theta) * i_s_Lss; %%%
+cLss    = yLss - (1-theta) * i_s_Lss - gLss; 
 
-c_h_Lss = wss + t_h_0_Lss + (tau_k / theta) * Rkss * kLss; %%%
+% c_h_Lss = wss + t_h_0_Lss + tau_k * Rkss * kLss; %%%
+c_h_Lss = wss + t_h_0_Lss + tau_k * Rkss * kLss/theta - gLss;
 c_s_Lss = (1 / (1 - theta)) * cLss - (theta / (1 - theta)) * c_h_Lss; %%%
 
 lam_h_Lss = expg / (expg * c_h_Lss - h * cLss);
@@ -262,8 +264,8 @@ C    = zeros(NY, 1);
 % eq 1 and 2, production function (y, ystar)
 % -------------------------------------------------------------------------
 GAM0(y, y) = 1;
-GAM0(y, k) = -(1 + lambdapss) * alpha; 
-GAM0(y, L) = -(1 + lambdapss) * (1 - alpha);
+GAM0(y, k) = -((yss + F) / yss) * alpha;     % (1 - lambda_p) ?
+GAM0(y, L) = -((yss + F) / yss) * (1-alpha); % (1 - lambda_p) ?
 % ===
 GAM0(ystar, ystar) = GAM0(y, y);
 GAM0(ystar, kstar) = GAM0(y, k);
@@ -301,9 +303,7 @@ GAM0(mcstar, wstar)  = GAM0(mc, w);
 % -------------------------------------------------------------------------
 GAM0(p, p)       = 1;
 GAM0(p, ep)      = -beta / (1 + iotap*beta);
-
 GAM1(p, p)       = iotap / (1 + iotap*beta);
-
 GAM0(p, mc)      = -((1 - beta*xip) * (1 - xip) / ((1 + iotap * beta) * xip)); % kappa_p
 GAM0(p, lambdap) = -1; % normalized
 %===
@@ -319,10 +319,10 @@ GAM0(c, c_s) = -(1-theta) * (c_s_ss / css);
 
 GAM0(c_h, c_h) = 1;
 GAM0(c_h, w)   = -wss * expLss / c_h_ss;
-GAM0(c_h, y)   = (yss / c_h_ss) * (1 - (1 / gss));
-GAM0(c_h, g)   = (yss / c_h_ss) * (1 / gss);
 GAM0(c_h, L)   = -wss * expLss / c_h_ss;
 GAM0(c_h, t_h) = -yss / c_h_ss;
+% GAM0(c_h, g) = -yss / c_h_ss;   %%%NEW%%%
+GAM0(c_h, g) = gLss/c_h_Lss ;   %%%NEW%%%
 %===
 GAM0(cstar, cstar)    = GAM0(c, c);
 GAM0(cstar, c_h_star) = GAM0(c, c_h);
@@ -330,10 +330,9 @@ GAM0(cstar, c_s_star) = GAM0(c, c_s);
 
 GAM0(c_h_star, c_h_star) = GAM0(c_h, c_h);
 GAM0(c_h_star, wstar)    = GAM0(c_h, w);
-GAM0(c_h_star, y_star)   = GAM0(c_h, y);
-GAM0(c_h_star, g)        = GAM0(c_h, g);
 GAM0(c_h_star, Lstar)    = GAM0(c_h, L);
 GAM0(c_h_star, t_h_star) = GAM0(c_h, t_h);
+GAM0(c_h_star, g)        = GAM0(c_h, g);   %%%NEW%%%
 %===
 
 
@@ -348,7 +347,6 @@ GAM0(lam_s, b)     = -1 / ((1 - rhob) * (sigma * lam_s_ss + (1-sigma) * lam_h_ss
                            (expg*c_s_ss - h*css) * (expg*c_h_ss - h*css) /          ...
                            (h*css * (sigma * lam_s_ss * (expg * c_h_ss - h * css) + ...
                            (1-sigma) * lam_h_ss * (expg * c_s_ss - h * css))));
-
 GAM0(lam_s, z)     = h * css / (expg * c_s_ss - h * css);
 GAM0(lam_s, c_s)   = expg * c_s_ss / (expg * c_s_ss - h * css);
 GAM1(lam_s, c)     = h * css / (expg * c_s_ss - h * css);
@@ -362,7 +360,7 @@ GAM0(lam_h, z)     = h * css / (expg * c_h_ss - h * css);
 GAM0(lam_h, c_h)   = expg * c_h_ss / (expg * c_h_ss - h * css);
 GAM1(lam_h, c)     = h * css / (expg * c_h_ss - h * css);
 
-GAM0(c_s, lam_s)  =  1; %%% lam_s already used in equation
+GAM0(c_s, lam_s)      = 1;
 GAM0(c_s, R)      = -1;
 GAM0(c_s, z)      = rhoz;
 GAM0(c_s, ep)     = 1;
@@ -370,7 +368,6 @@ GAM0(c_s, elam_s) = -(sigma*lam_s_ss)     / (sigma*lam_s_ss + (1-sigma)*lam_h_ss
 GAM0(c_s, elam_h) = -((1-sigma)*lam_h_ss) / (sigma*lam_s_ss + (1-sigma)*lam_h_ss);
 GAM0(c_s, ey)     = -(sigma_prime)*sigma*(lam_s_ss - lam_h_ss) / ... 
                         (sigma*lam_s_ss + (1-sigma)*lam_h_ss); 
-                    
 % ===
 GAM0(lambdastar, lambdastar) = GAM0(lambda, lambda);
 GAM0(lambdastar, lam_h_star) = GAM0(lambda, lam_h);
@@ -388,9 +385,10 @@ GAM0(lam_h_star, z)          = GAM0(lam_h, z);
 GAM0(lam_h_star, c_h_star)   = GAM0(lam_h, c_h);
 GAM1(lam_h_star, cstar)      = GAM1(lam_h, c);
 
-GAM0(c_s_star, lam_s_star)  = GAM0(c_s, lam_s); %%% lam_s already assigned an equation
+GAM0(c_s_star, lam_s_star)  = GAM0(c_s, lam_s);
 GAM0(c_s_star, Rstar)       = GAM0(c_s, R);
 GAM0(c_s_star, z)           = GAM0(c_s, z);
+%GAM0(c_s_star, ep)          = GAM0(c_s, ep);     % CHECK "epstar"
 GAM0(c_s_star, elam_s_star) = GAM0(c_s, elam_s);
 GAM0(c_s_star, elam_h_star) = GAM0(c_s, elam_h);
 GAM0(c_s_star, eystar)      = GAM0(c_s, ey);     
@@ -557,8 +555,10 @@ GAM0(gdpstar, ustar)   = GAM0(gdp, u);
 % -------------------------------------------------------------------------
 GAM0(u, c)   = css / yss;
 GAM0(u, i_s) = (1 - theta) * i_s_ss / yss;
-GAM0(u, y)   = -1 / gss;
-GAM0(u, g)   = 1 / gyss;
+% GAM0(u, y)   = -1 / gss;
+% GAM0(u, g)   =  1 / gss;
+GAM0(u, y)   = -1;
+GAM0(u, g)   =  gyss;
 GAM0(u, u)   = kss * Rkss / yss;
 % ===
 GAM0(ustar, cstar)    = GAM0(u, c);
@@ -595,7 +595,6 @@ GAM0(ephi,    phi)    = 1; GAM1(ephi,    ephi)    = 1; PPI(ephi,    phiex)    = 
 GAM0(eRk,     Rk)     = 1; GAM1(eRk,     eRk)     = 1; PPI(eRk,     Rkex)     = 1;
 GAM0(e_i_s,   i_s)    = 1; GAM1(e_i_s,   e_i_s)   = 1; PPI(e_i_s,   i_s_ex)   = 1;
 GAM0(ew,      w)      = 1; GAM1(ew,      ew)      = 1; PPI(ew,      wex)      = 1;
-
 % New parameters
 GAM0(ey,      y)      = 1; GAM1(ey,      ey)      = 1; PPI(ey,      yex)      = 1;
 GAM0(elam_s,  lam_s)  = 1; GAM1(elam_s,  elam_s)  = 1; PPI(elam_s,  lam_s_ex) = 1;
@@ -607,7 +606,6 @@ GAM0(elambdastar, lambdastar) = 1; GAM1(elambdastar, elambdastar) = 1; PPI(elamb
 GAM0(ephistar,    phistar)    = 1; GAM1(ephistar,    ephistar)    = 1; PPI(ephistar,    phiexstar)     = 1;
 GAM0(eRkstar,     Rkstar)     = 1; GAM1(eRkstar,     eRkstar)     = 1; PPI(eRkstar,     Rkexstar)      = 1;
 GAM0(e_i_s_star,  i_s_star)   = 1; GAM1(e_i_s_star,  e_i_s_star)  = 1; PPI(e_i_s_star,  i_s_ex_star)   = 1;
-
 % New parameters
 GAM0(eystar,      ystar)      = 1; GAM1(eystar,      eystar)      = 1; PPI(eystar,      yex_star)      = 1;
 GAM0(elam_s_star, lam_s_star) = 1; GAM1(elam_s_star, elam_s_star) = 1; PPI(elam_s_star, lam_s_ex_star) = 1;

@@ -1,9 +1,9 @@
-function logpost = logpostTHANK(param,T,y)
+function logpost = logpostTHANK(param,poscal,T,y)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Date: August 2019
+% Date: December 22, 2009
 % this function computes the value of the posterior density for the model
-% in Bilbiie, Primiceri, and Tambalotti (2019)
+% in Justiniano, Primiceri and Tambalotti (2010)
 % To be used in the minimization algorithm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -12,7 +12,7 @@ function logpost = logpostTHANK(param,T,y)
 param = bounds(param);
 
 % prior density
-logprior = logpriorTHANK(param);
+logprior = logpriorTHANK(param,poscal);
 
 % posterior calculation
 if logprior == -1e10

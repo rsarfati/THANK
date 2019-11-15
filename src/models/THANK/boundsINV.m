@@ -6,7 +6,7 @@ iotaw          = bound01INV(param(3));
 gamma100       =            param(4);  
 h              = bound01INV(param(5));  
 lambdapss      =            param(6); 
-lambdawss      =            param(7); 
+lambdawss      = bound0INV(param(7));
 Lss            =            param(8);       
 pss100         =            param(9);   
 Fbeta          = bound0INV( param(10));
@@ -38,9 +38,9 @@ sdb            = bound0INV( param(35));
 
 theta          = bound0BINV(param(36),.99);
 sigma          = bound0BINV(param(37),.99);
-sigma_prime    = param(38);     
-tau_D          = param(39); %bound0BINV(param(39),.99);
-tau_k          = param(40); %bound0BINV(param(40),.99);
+sigma_prime    =            param(38);     
+tau_D          = bound0BINV(param(39),.99);
+tau_k          = bound0BINV(param(40),.99);
 
 theta = [alpha iotap iotaw gamma100 h lambdapss lambdawss Lss pss100 Fbeta       ...
          niu xip xiw chi S fp fy fdy rhoR rhoz rhog rhomiu rholambdap rholambdaw ...

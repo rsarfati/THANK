@@ -1,4 +1,4 @@
-function logpriorTHANK = logpriorTHANK(param)
+function logpriorTHANK = logpriorTHANK(param,poscal)
 
 loprior = zeros(length(param));
 
@@ -51,5 +51,5 @@ prior(40) = logBetapdf(param(40),0.4,0.2);          % tau_k
 if all(isfinite(prior))==0 || all(isreal(prior))==0
     logpriorTHANK = -1e10;
 else
-    logpriorTHANK = sum(prior);
+    logpriorTHANK = sum(prior)-sum(prior(poscal));
 end
