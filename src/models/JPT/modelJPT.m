@@ -121,8 +121,8 @@ NETA=7+5;
 % -------------------------------------------------------------------------
 
 % calibrated parameters
-gss=0.22;           % capital depreciation rate
-delta=0.025;        % steady state government spending to GDP ratio
+gss=0.22;           % steady state g spending to GDP ratio, originally commented as "capital depreciation rate"
+delta=0.025;        % capital depreciation rate, originally commented as "steady state government spending to GDP ratio"
 
 
 % Non SD parameters
