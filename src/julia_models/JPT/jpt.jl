@@ -137,21 +137,19 @@ function init_model_indices!(m::JPT)
                        :Ec_f_sh, :Eλ_f_sh, :Eϕ_f_sh, :ERk_f_sh, :Ei_f_sh]       # flexible prices
 
     # Equilibrium conditions
-    equilibrium_conditions = [[
-        :eq_euler, :eq_inv, :eq_capval, :eq_spread, :eq_nevol, :eq_output, :eq_caputl, :eq_capsrv, :eq_capev,
-        :eq_mkupp, :eq_phlps, :eq_caprnt, :eq_msub, :eq_wage, :eq_mp, :eq_res, :eq_g, :eq_b, :eq_μ, :eq_z,
-        :eq_λ_f, :eq_λ_w, :eq_rm, :eq_σ_ω, :eq_μ_e, :eq_γ, :eq_λ_f1, :eq_λ_w1, :eq_Ec,
-        :eq_Eqk, :eq_Ei, :eq_Eπ, :eq_EL, :eq_Erk, :eq_Ew, :eq_ERktil, :eq_euler_f, :eq_inv_f,
-        :eq_capval_f, :eq_output_f, :eq_caputl_f, :eq_capsrv_f, :eq_capev_f, :eq_mkupp_f,
-        :eq_caprnt_f, :eq_msub_f, :eq_res_f, :eq_Ec_f, :eq_Eqk_f, :eq_Ei_f, :eq_EL_f,
-        :eq_ztil, :eq_π_star, :eq_π1, :eq_π2, :eq_π_a, :eq_Rt1, :eq_zp, :eq_Ez, :eq_spread_f,:eq_nevol_f,  :eq_Erktil_f];
-        [Symbol("eq_rml$i") for i=1:n_anticipated_shocks(m)]]
+    equilibrium_conditions = [:eq_y, :eq_k, :eq_L, :eq_Rk, :eq_w, :eq_π, :eq_s, :eq_λ,     # sticky prices
+                              :eq_c, :eq_R, :eq_u, :eq_ϕ, :eq_i, :eq_kbar, :eq_wgap,
+                              :eq_gdp, :eq_z, :eq_g, :eq_μ, :eq_λ_p, :eq_λ_w,
+                              :eq_b, :eq_mp, :eq_Eπ, :eq_Eλ, :eq_Eϕ,
+                              :eq_Rk, :eq_Ei, :eq_Ew, :eq_gdp1, :eq_c1, :eq_i1, :eq_w1,    # CHECK BACK IF ANY CAN BE AUGMENTED VARIABLES
+                              :eq_y_f, :eq_k_f, :eq_L_f, :eq_Rk_f, :eq_w_f, :eq_s_f,       # flexible prices
+                              :eq_λ_f, :eq_c_f, :eq_R_f, :eq_u_f, :eq_ϕ_f,
+                              :eq_i_f, :eq_kbar_f, :eq_wgap_f, :eq_Ec_f, :eq_Eλ_f,
+                              :eq_Eϕ_f, :eq_ERk_f, :eq_Ei_f]
 
     # Additional states added after solving model
     # Lagged states and observables measurement error
-    endogenous_states_augmented = [
-        :y_t1, :c_t1, :i_t1, :w_t1, :π_t1_dup, :L_t1, :u_t1, :Et_π_t, :e_lr_t, :e_tfp_t, :e_gdpdef_t,
-        :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_gdp_t1, :e_gdi_t1]
+    endogenous_states_augmented = []
 
     # Observables
     observables = keys(m.observable_mappings)
